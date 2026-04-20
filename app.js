@@ -1190,3 +1190,32 @@ document.head.appendChild(fadeStyle);
       obs.observe(el);
     });
 })();
+
+/* ═══ RIR TIMELINE ANIMATION ═══ */
+(function initRirTimeline() {
+  const section = document.getElementById('rir-process');
+  if (!section) return;
+
+  const steps  = section.querySelectorAll('.rir-step');
+  const fill   = document.getElementById('rirTrackFill');
+  let triggered = false;
+
+  const obs = new IntersectionObserver(([e]) => {
+    if (e.isIntersecting && !triggered) {
+      triggered = true;
+
+      /* Animate track fill */
+      if (fill) fill.classList.add('animated');
+
+      /* Stagger step reveal */
+      steps.forEach((step, i) => {
+        const delay = parseInt(step.dataset.delay || 0);
+        setTimeout(() => step.classList.add('visible'), delay + 200);
+      });
+
+      obs.disconnect();
+    }
+  }, { threshold: 0.2 });
+
+  obs.observe(section);
+})();
