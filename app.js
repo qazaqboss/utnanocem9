@@ -289,64 +289,7 @@ function animateCounter(el) {
   const ctx = document.getElementById('strengthChart');
   if (!ctx) return;
 
-  /* ── External tooltip element ── */
-  const tooltipEl = document.createElement('div');
-  tooltipEl.id = 'strengthTooltip';
-  tooltipEl.style.cssText = `
-    position: absolute;
-    background: rgba(13,13,13,0.92);
-    color: #fff;
-    padding: 10px 14px;
-    border-radius: 10px;
-    font-size: 13px;
-    font-family: 'Inter', sans-serif;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.35s ease;
-    z-index: 99;
-    min-width: 180px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.25);
-    white-space: nowrap;
-  `;
-  ctx.parentElement.style.position = 'relative';
-  ctx.parentElement.appendChild(tooltipEl);
-
-  let isPressed = false;
-
-  const externalTooltip = ({ chart, tooltip }) => {
-    if (!isPressed || tooltip.opacity === 0 || !tooltip.dataPoints?.length) {
-      return;
-    }
-    const dp = tooltip.dataPoints;
-    const label = dp[0].label;
-
-    let html = `<div style="font-weight:700;margin-bottom:6px;font-size:14px;">${label}</div>`;
-    dp.forEach(p => {
-      const color = p.datasetIndex === 0 ? '#fff' : '#BDBDBD';
-      html += `<div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;">
-        <span style="display:inline-block;width:12px;height:2px;background:${color};border-radius:2px;"></span>
-        <span style="color:${color}">${p.dataset.label}: <b>${p.raw} МПа</b></span>
-      </div>`;
-    });
-    tooltipEl.innerHTML = html;
-
-    const canvasRect = chart.canvas.getBoundingClientRect();
-    const wrapRect   = ctx.parentElement.getBoundingClientRect();
-    let x = tooltip.caretX + 12;
-    let y = tooltip.caretY - 20;
-    if (x + 200 > wrapRect.width) x = tooltip.caretX - 200;
-    if (y < 0) y = 4;
-    tooltipEl.style.left = x + 'px';
-    tooltipEl.style.top  = y + 'px';
-    tooltipEl.style.opacity = '1';
-  };
-
-  const hideTooltip = () => {
-    isPressed = false;
-    tooltipEl.style.opacity = '0';
-  };
-
-  const chart = new Chart(ctx, {
+  new Chart(ctx, {
     type: 'line',
     data: {
       labels: ['0', '1 сут', '3 сут', '7 сут', '14 сут', '28 сут'],
@@ -380,7 +323,6 @@ function animateCounter(el) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      events: ['mousedown', 'touchstart', 'mousemove', 'touchmove'],
       interaction: { mode: 'index', intersect: false },
       plugins: {
         legend: {
@@ -389,8 +331,9 @@ function animateCounter(el) {
           labels: { boxWidth: 24, boxHeight: 2, padding: 16, font: { size: 12, weight: '500' } }
         },
         tooltip: {
-          enabled: false,
-          external: externalTooltip,
+          callbacks: {
+            label: ctx => ` ${ctx.dataset.label}: ${ctx.raw} МПа`
+          }
         }
       },
       scales: {
@@ -407,16 +350,8 @@ function animateCounter(el) {
       }
     }
   });
-
-  /* ── Press / Release handlers ── */
-  ['mousedown', 'touchstart'].forEach(ev =>
-    ctx.addEventListener(ev, () => { isPressed = true; }, { passive: true })
-  );
-  ['mouseup', 'touchend', 'mouseleave', 'touchcancel'].forEach(ev =>
-    ctx.addEventListener(ev, hideTooltip, { passive: true })
-  );
-  document.addEventListener('mouseup', hideTooltip, { passive: true });
 })();
+
 
 
 /* ═══ 7. CHART: Radar (Application) ═══ */
