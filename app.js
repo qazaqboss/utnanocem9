@@ -141,6 +141,20 @@ Chart.defaults.color = '#6B6B6B';
 })();
 
 function animateCounter(el) {
+  /* Text-only values (e.g. 14,5х or 12–15) */
+  if (el.dataset.targetText) {
+    let dots = 0;
+    const frames = ['...', '..', '.'];
+    const ticker = setInterval(() => {
+      el.textContent = frames[dots++ % frames.length];
+    }, 200);
+    setTimeout(() => {
+      clearInterval(ticker);
+      el.textContent = el.dataset.targetText;
+    }, 900);
+    return;
+  }
+  /* Numeric counter */
   const target = parseInt(el.dataset.target);
   const duration = 1800;
   const start = performance.now();
@@ -658,28 +672,26 @@ function makeSparkline(id, data, color) {
   new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: [
-        'До РИР', '1 неделя', '1 месяц', '3 месяца', '6 месяцев'
-      ],
+      labels: ['До РИР', 'День 7', 'День 14', 'День 30+'],
       datasets: [
         {
           label: 'Дебит нефти (т/сут)',
-          data: [4.2, 8.5, 10.1, 10.8, 10.2],
-          backgroundColor: (ctx) => {
-            const idx = ctx.dataIndex;
+          data: [1.1, 7.5, 16, 16],
+          backgroundColor: (c) => {
+            const idx = c.dataIndex;
             return idx === 0
               ? 'rgba(189,189,189,0.5)'
-              : `rgba(13,13,13,${0.5 + idx * 0.12})`;
+              : `rgba(13,13,13,${0.55 + idx * 0.12})`;
           },
-          borderRadius: 6,
+          borderRadius: 8,
           borderSkipped: false,
         },
         {
           label: 'Обводнённость (%)',
-          data: [92, 60, 38, 30, 28],
+          data: [92, 56, 26, 26],
           type: 'line',
           borderColor: '#EA580C',
-          backgroundColor: 'rgba(234,88,12,0.08)',
+          backgroundColor: 'rgba(234,88,12,0.07)',
           borderWidth: 2.5,
           fill: true,
           tension: 0.4,
@@ -692,12 +704,26 @@ function makeSparkline(id, data, color) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      animation: {
+        delay: (ctx) => ctx.type === 'data' && ctx.mode === 'default'
+          ? ctx.dataIndex * 150
+          : 0,
+        duration: 900,
+        easing: 'easeOutQuart',
+      },
       interaction: { mode: 'index', intersect: false },
       plugins: {
         legend: {
           position: 'top',
           align: 'end',
           labels: { boxWidth: 20, boxHeight: 2, padding: 14, font: { size: 12 } }
+        },
+        tooltip: {
+          callbacks: {
+            label: c => c.datasetIndex === 0
+              ? ` Дебит: ${c.raw} т/сут`
+              : ` Обводнённость: ${c.raw}%`
+          }
         }
       },
       scales: {
@@ -722,6 +748,7 @@ function makeSparkline(id, data, color) {
     }
   });
 })();
+
 
 /* ═══ 10. CHART: Success Rate Comparison ═══ */
 (function initSuccessChart() {
@@ -961,6 +988,34 @@ fadeStyle.textContent = `
   @keyframes fadeInUp {
     from { opacity: 0; transform: translateY(16px); }
     to   { opacity: 1; transform: translateY(0); }
+  }
+  .kpi-label {
+    font-size: 0.8125rem;
+    color: var(--c-text-muted);
+    margin-top: 6px;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  .kpi-sublabel {
+    font-size: 0.6875rem;
+    color: var(--c-text-muted);
+    opacity: 0.7;
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+  .kpi-sparkline { height: 48px; margin-top: 16px; }
+  .kpi-blue .kpi-number { color: var(--c-accent); }
+  .kpi-green .kpi-number { color: var(--c-accent-3); }
+  .kpi-purple .kpi-number { color: var(--c-accent-2); }
+  .kpi-orange .kpi-number { color: var(--c-accent-4); }
+
+  /* KPI card staggered entrance */
+  @keyframes kpiSlideIn {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .kpi-card {
+    animation: kpiSlideIn 0.55s cubic-bezier(0.4,0,0.2,1) both;
   }
   .nav-link.active {
     color: var(--c-text) !important;
