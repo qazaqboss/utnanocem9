@@ -443,7 +443,171 @@ html, body { overflow-x: hidden; max-width: 100%; }
   100% { opacity: 0; transform: scaleY(0.3) translateY(16px); transform-origin: top; }
 }
 
+/* ─── Particle visualisation block ─── */
+.particle-viz-wrap {
+  margin-top: 56px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  background: var(--c-surface);
+  box-shadow: var(--shadow-sm);
+}
+.pv-label {
+  padding: 20px 32px 0;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--c-text-muted);
+}
+.particle-viz-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+
+/* ── Crack canvas ── */
+.crack-canvas-box {
+  position: relative;
+  padding: 24px 32px 24px;
+  border-right: 1px solid var(--c-border);
+}
+.crack-canvas-box canvas {
+  width: 100%;
+  height: 320px;
+  border-radius: var(--radius-md);
+  background: #0D0D0D;
+  display: block;
+}
+.crack-caption {
+  margin-top: 12px;
+  font-size: 0.8125rem;
+  color: var(--c-text-muted);
+  line-height: 1.5;
+  padding: 0 4px;
+}
+
+/* ── Size comparison ── */
+.size-compare {
+  padding: 24px 32px 28px;
+}
+.size-compare-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--c-text-muted);
+  margin-bottom: 20px;
+}
+.size-circles {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 32px;
+}
+.size-item { text-align: center; flex: 1; }
+.size-circle {
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+  border: 2px solid var(--c-text);
+  position: relative;
+}
+.size-nano {
+  width: 52px; height: 52px;
+  background: #0D0D0D;
+}
+.size-nano .size-val { color: #fff; font-size: 0.9rem; font-weight: 800; line-height: 1; }
+.size-nano .size-mu  { color: rgba(255,255,255,0.6); font-size: 0.55rem; font-weight: 500; }
+
+.size-portland {
+  width: 140px; height: 140px;
+  background: transparent;
+  border-color: #9E9E9E;
+}
+.size-portland .size-val { color: var(--c-text); font-size: 1.25rem; font-weight: 800; line-height: 1; }
+.size-portland .size-mu  { color: var(--c-text-muted); font-size: 0.6875rem; font-weight: 500; }
+
+.size-vs {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--c-text-muted);
+  letter-spacing: 0.08em;
+  flex-shrink: 0;
+  opacity: 0.5;
+}
+.size-name {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--c-text);
+  margin-bottom: 4px;
+}
+.size-sub {
+  font-size: 0.6875rem;
+  color: var(--c-text-muted);
+  line-height: 1.5;
+}
+
+/* ── Bar comparison ── */
+.size-bar-compare { display: flex; flex-direction: column; gap: 12px; }
+.size-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.size-bar-lbl {
+  font-size: 0.75rem;
+  color: var(--c-text-muted);
+  font-weight: 500;
+  width: 100px;
+  flex-shrink: 0;
+  text-align: right;
+}
+.size-bar-track {
+  flex: 1;
+  height: 8px;
+  background: var(--c-border);
+  border-radius: 100px;
+  overflow: hidden;
+}
+.size-bar-fill {
+  height: 100%;
+  border-radius: 100px;
+  transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
+}
+.sbf-nano    { background: #0D0D0D; }
+.sbf-micro   { background: #6B6B6B; }
+.sbf-portland{ background: #BDBDBD; }
+.size-bar-val {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--c-text);
+  width: 52px;
+  flex-shrink: 0;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .particle-viz-inner { grid-template-columns: 1fr; }
+  .crack-canvas-box { border-right: none; border-bottom: 1px solid var(--c-border); padding: 20px 16px; }
+  .crack-canvas-box canvas { height: 240px; }
+  .size-compare { padding: 20px 16px 24px; }
+  .size-portland { width: 100px; height: 100px; }
+  .size-nano { width: 40px; height: 40px; }
+  .pv-label { padding: 16px 16px 0; }
+  .size-bar-lbl { width: 80px; font-size: 0.6875rem; }
+}
+@media (max-width: 480px) {
+  .size-circles { gap: 12px; }
+  .size-portland { width: 80px; height: 80px; }
+  .size-portland .size-val { font-size: 1rem; }
+}
+
 /* ═══ CHARTS ═══ */
+
 .chart-card {
   background: var(--c-surface);
   border: 1px solid var(--c-border);

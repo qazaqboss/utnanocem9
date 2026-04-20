@@ -141,6 +141,64 @@
         </div>
       </div>
     </div>
+
+    <!-- ── Particle flow visualisation ── -->
+    <div class="particle-viz-wrap">
+      <div class="pv-label">— Визуализация проникновения в трещину</div>
+      <div class="particle-viz-inner">
+
+        <!-- Left: animated crack canvas -->
+        <div class="crack-canvas-box">
+          <canvas id="crackCanvas"></canvas>
+          <div class="crack-caption">
+            Частицы NanoCem UT-9 (3,5 мкм) проникают сквозь трещину 0,02 мм
+          </div>
+        </div>
+
+        <!-- Right: size comparison -->
+        <div class="size-compare">
+          <div class="size-compare-title">Сравнение размеров частиц</div>
+          <div class="size-circles">
+            <div class="size-item">
+              <div class="size-circle size-nano">
+                <span class="size-val">3,5</span>
+                <span class="size-mu">мкм</span>
+              </div>
+              <div class="size-name">NanoCem UT-9</div>
+              <div class="size-sub">D50 = 3,5 мкм · D95 ≤ 9,5 мкм</div>
+            </div>
+            <div class="size-vs">VS</div>
+            <div class="size-item">
+              <div class="size-circle size-portland">
+                <span class="size-val">40+</span>
+                <span class="size-mu">мкм</span>
+              </div>
+              <div class="size-name">Портландцемент</div>
+              <div class="size-sub">D50 ≈ 40–60 мкм · не проникает</div>
+            </div>
+          </div>
+          <div class="size-bar-compare">
+            <div class="size-bar-row">
+              <span class="size-bar-lbl">NanoCem UT-9</span>
+              <div class="size-bar-track"><div class="size-bar-fill sbf-nano" style="width:8.75%"></div></div>
+              <span class="size-bar-val">3,5 мкм</span>
+            </div>
+            <div class="size-bar-row">
+              <span class="size-bar-lbl">Микроцемент</span>
+              <div class="size-bar-track"><div class="size-bar-fill sbf-micro" style="width:37.5%"></div></div>
+              <span class="size-bar-val">15 мкм</span>
+            </div>
+            <div class="size-bar-row">
+              <span class="size-bar-lbl">Портланд</span>
+              <div class="size-bar-track"><div class="size-bar-fill sbf-portland" style="width:100%"></div></div>
+              <span class="size-bar-val">40 мкм</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
   </div>
 </section>
 

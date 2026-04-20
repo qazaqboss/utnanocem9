@@ -154,10 +154,203 @@ function animateCounter(el) {
   requestAnimationFrame(update);
 }
 
+/* ═══ 3b. CRACK PARTICLE ANIMATION ═══ */
+(function initCrackAnimation() {
+  const canvas = document.getElementById('crackCanvas');
+  if (!canvas) return;
+
+  const ctx = canvas.getContext('2d');
+  let W, H, animId;
+  let particles = [];
+
+  /* Crack path — a jagged channel through rock */
+  function getCrackPath(w, h) {
+    /* returns array of {x,y} points forming a winding crack */
+    const pts = [];
+    const steps = 24;
+    const cx = w * 0.5;
+    let y = 0;
+    for (let i = 0; i <= steps; i++) {
+      const t = i / steps;
+      const jitter = (i === 0 || i === steps) ? 0 : (Math.random() - 0.5) * w * 0.18;
+      pts.push({ x: cx + jitter, y: t * h });
+    }
+    return pts;
+  }
+
+  let crackPts = [];
+  const CRACK_W = 18; /* visual crack width px */
+
+  function resize() {
+    W = canvas.offsetWidth;
+    H = canvas.offsetHeight;
+    canvas.width  = W * window.devicePixelRatio;
+    canvas.height = H * window.devicePixelRatio;
+    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    crackPts = getCrackPath(W, H);
+    initParticlePool();
+  }
+
+  /* Spawn a particle at the top of crack */
+  function spawnParticle() {
+    const top = crackPts[0];
+    return {
+      x: top.x + (Math.random() - 0.5) * CRACK_W * 0.6,
+      y: top.y,
+      r: Math.random() * 2.5 + 1,
+      speed: Math.random() * 1.2 + 0.4,
+      opacity: Math.random() * 0.6 + 0.4,
+      seg: 0,        /* which crack segment */
+      progress: 0,   /* 0–1 along segment */
+    };
+  }
+
+  function initParticlePool() {
+    particles = [];
+    const count = Math.min(Math.floor(W / 8), 40);
+    for (let i = 0; i < count; i++) {
+      const p = spawnParticle();
+      /* stagger initial positions */
+      p.y = Math.random() * H;
+      p.seg = Math.floor(Math.random() * (crackPts.length - 1));
+      p.progress = Math.random();
+    }
+  }
+
+  /* Get x position along crack at fraction t */
+  function crackX(t) {
+    const idx = t * (crackPts.length - 1);
+    const lo  = Math.floor(idx);
+    const hi  = Math.min(lo + 1, crackPts.length - 1);
+    const f   = idx - lo;
+    return crackPts[lo].x * (1 - f) + crackPts[hi].x * f;
+  }
+
+  function drawRock() {
+    /* Dark background */
+    ctx.fillStyle = '#0D0D0D';
+    ctx.fillRect(0, 0, W, H);
+
+    /* Rock texture — left side */
+    const leftPath = new Path2D();
+    leftPath.moveTo(0, 0);
+    for (let i = 0; i < crackPts.length; i++) {
+      const cx = crackPts[i].x - CRACK_W / 2;
+      leftPath.lineTo(cx, crackPts[i].y);
+    }
+    leftPath.lineTo(0, H);
+    leftPath.closePath();
+
+    /* Rock texture — right side */
+    const rightPath = new Path2D();
+    rightPath.moveTo(W, 0);
+    for (let i = 0; i < crackPts.length; i++) {
+      const cx = crackPts[i].x + CRACK_W / 2;
+      rightPath.lineTo(cx, crackPts[i].y);
+    }
+    rightPath.lineTo(W, H);
+    rightPath.closePath();
+
+    /* Rock fill with subtle texture */
+    const grad = ctx.createLinearGradient(0, 0, W, 0);
+    grad.addColorStop(0, '#1a1a1a');
+    grad.addColorStop(0.5, '#252525');
+    grad.addColorStop(1, '#1a1a1a');
+    ctx.fillStyle = grad;
+    ctx.fill(leftPath);
+    ctx.fill(rightPath);
+
+    /* Rock edge highlight */
+    ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+    ctx.lineWidth = 1;
+    ctx.stroke(leftPath);
+    ctx.stroke(rightPath);
+
+    /* Crack centre line (faint) */
+    ctx.beginPath();
+    ctx.moveTo(crackPts[0].x, 0);
+    for (const pt of crackPts) ctx.lineTo(pt.x, pt.y);
+    ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+    ctx.lineWidth = 0.5;
+    ctx.stroke();
+
+    /* Crack width label */
+    const midPt = crackPts[Math.floor(crackPts.length / 2)];
+    ctx.save();
+    ctx.font = '600 10px Inter, sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.35)';
+    ctx.textAlign = 'right';
+    ctx.fillText('← 0,02 мм →', midPt.x - CRACK_W / 2 - 4, midPt.y);
+    ctx.restore();
+  }
+
+  function updateParticles() {
+    for (const p of particles) {
+      p.y += p.speed;
+      const t = p.y / H;
+      p.x = crackX(Math.min(t, 1)) + (Math.random() - 0.5) * CRACK_W * 0.4;
+
+      if (p.y > H + 10) {
+        /* reset to top */
+        const top = crackPts[0];
+        p.x = top.x + (Math.random() - 0.5) * CRACK_W * 0.5;
+        p.y = -p.r * 2;
+        p.speed = Math.random() * 1.2 + 0.4;
+        p.r = Math.random() * 2.5 + 1;
+        p.opacity = Math.random() * 0.6 + 0.4;
+      }
+    }
+  }
+
+  function drawParticles() {
+    for (const p of particles) {
+      /* Glow */
+      const glow = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 4);
+      glow.addColorStop(0, `rgba(255,255,255,${p.opacity * 0.3})`);
+      glow.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r * 4, 0, Math.PI * 2);
+      ctx.fillStyle = glow;
+      ctx.fill();
+
+      /* Core dot */
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,255,${p.opacity})`;
+      ctx.fill();
+    }
+  }
+
+  function loop() {
+    ctx.clearRect(0, 0, W, H);
+    drawRock();
+    updateParticles();
+    drawParticles();
+    animId = requestAnimationFrame(loop);
+  }
+
+  /* Start when visible */
+  const obs = new IntersectionObserver(([e]) => {
+    if (e.isIntersecting) {
+      resize();
+      loop();
+      obs.disconnect();
+    }
+  }, { threshold: 0.2 });
+  obs.observe(canvas);
+
+  window.addEventListener('resize', () => {
+    cancelAnimationFrame(animId);
+    resize();
+    loop();
+  }, { passive: true });
+})();
+
 /* ═══ 4. CHART: Particle Size Distribution ═══ */
 (function initParticleSizeChart() {
   const ctx = document.getElementById('particleSizeChart');
   if (!ctx) return;
+
 
   const labels = [];
   const nanoCemData = [];
