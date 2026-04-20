@@ -90,11 +90,13 @@ html, body { overflow-x: hidden; max-width: 100%; }
   flex-shrink: 0;
 }
 .logo-easymix {
-  color: #059669;
+  color: #0D0D0D;
   font-weight: 800;
   font-size: 1rem;
   letter-spacing: -0.02em;
 }
+/* Footer logo — white on dark background */
+.footer .logo-easymix { color: #ffffff; }
 .logo-dot {
   color: var(--c-text-muted);
   font-weight: 300;
@@ -1224,7 +1226,7 @@ html, body { overflow-x: hidden; max-width: 100%; }
   .logo-nano { display: none; }
   .logo-model { display: none; }
   .logo-dot { display: none; }
-  .logo-easymix { font-size: 1.1rem; color: #059669; }
+  .logo-easymix { font-size: 1.1rem; color: #0D0D0D; }
   .nav-logo { gap: 0; }
   .hero-title { font-size: clamp(2.4rem, 11vw, 3.5rem); }
   .hero-brand-row { padding: 6px 12px; }
