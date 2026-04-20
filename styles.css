@@ -867,6 +867,82 @@ html, body { overflow-x: hidden; max-width: 100%; }
 
 /* ─── Case study ─── */
 .case-section { }
+
+/* ─── Penetration Panel ─── */
+.penetration-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  height: 100%;
+}
+.pen-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--c-text-muted);
+}
+.pen-canvas-wrap {
+  position: relative;
+  flex: 1;
+  min-height: 260px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: #1a1a1a;
+}
+.pen-canvas-wrap canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+/* Annotation labels */
+.pen-label {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.4;
+  pointer-events: none;
+}
+.pen-label b { color: rgba(255,255,255,0.85); font-weight: 600; }
+.pen-label-top { top: 10px; left: 12px; flex-direction: column; align-items: flex-start; gap: 2px; }
+.pen-label-mid { top: 50%; right: 12px; transform: translateY(-50%); flex-direction: row-reverse; text-align: right; }
+.pen-label-bot { bottom: 14px; right: 12px; flex-direction: row-reverse; text-align: right; }
+.pen-arrow { font-size: 1rem; color: rgba(255,255,255,0.35); flex-shrink: 0; }
+.pen-al { font-size: 0.875rem; }
+/* Legend */
+.pen-legend {
+  background: #F5F5F5;
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.pen-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: #757575;
+}
+.pen-legend-item b { color: #333; }
+.pen-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+@media (max-width: 768px) {
+  .penetration-panel { gap: 10px; }
+  .pen-canvas-wrap { min-height: 200px; }
+  .pen-label { font-size: 0.6875rem; }
+  .pen-legend { padding: 8px 12px; }
+  .pen-legend-item { font-size: 0.6875rem; }
+}
+
 .case-heading {
   font-size: 1.5rem;
   font-weight: 700;

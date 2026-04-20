@@ -664,6 +664,151 @@ function makeSparkline(id, data, color) {
   makeSparkline('spark4', [38, 55, 70, 88, 105, 115, 128, 138, 148], 'rgb(234,88,12)');
 })();
 
+/* ═══ 8b. PENETRATION ANIMATION (penCanvas) ═══ */
+(function initPenAnimation() {
+  const canvas = document.getElementById('penCanvas');
+  if (!canvas) return;
+
+  const ctx = canvas.getContext('2d');
+  let W, H, rafId;
+  const CRACK_W = 14;     /* crack visual width */
+  const PARTICLE_COUNT = 18;
+  const CYCLE = 8000;     /* ms per full cycle */
+  let particles = [];
+  let startTime = null;
+
+  function resize() {
+    W = canvas.parentElement.clientWidth;
+    H = canvas.parentElement.clientHeight || 280;
+    canvas.width  = Math.round(W * devicePixelRatio);
+    canvas.height = Math.round(H * devicePixelRatio);
+    ctx.scale(devicePixelRatio, devicePixelRatio);
+  }
+
+  function spawnParticles() {
+    particles = [];
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      particles.push({
+        x: W / 2 + (Math.random() - 0.5) * CRACK_W * 0.7,
+        /* stagger starting y so they feel continuous */
+        phase: Math.random(),
+        r: Math.random() * 2 + 2,
+        speed: Math.random() * 0.3 + 0.7,
+        wobble: (Math.random() - 0.5) * 0.6,
+      });
+    }
+  }
+
+  function drawScene(t) {
+    ctx.clearRect(0, 0, W, H);
+
+    /* ── Rock blocks ── */
+    const cx = W / 2;
+    const gap = CRACK_W / 2;
+
+    /* left block */
+    const gL = ctx.createLinearGradient(0, 0, cx - gap, 0);
+    gL.addColorStop(0, '#2c2c2c');
+    gL.addColorStop(1, '#3a3a3a');
+    ctx.fillStyle = gL;
+    ctx.fillRect(0, 0, cx - gap, H);
+
+    /* right block */
+    const gR = ctx.createLinearGradient(cx + gap, 0, W, 0);
+    gR.addColorStop(0, '#3a3a3a');
+    gR.addColorStop(1, '#2c2c2c');
+    ctx.fillStyle = gR;
+    ctx.fillRect(cx + gap, 0, W - (cx + gap), H);
+
+    /* crack edges highlight */
+    ctx.strokeStyle = 'rgba(255,255,255,0.07)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(cx - gap, 0); ctx.lineTo(cx - gap, H); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx + gap, 0); ctx.lineTo(cx + gap, H); ctx.stroke();
+
+    /* crack label */
+    ctx.save();
+    ctx.font = '500 10px Inter, sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.28)';
+    ctx.textAlign = 'left';
+    ctx.fillText('Микротрещина 0,05 мм', cx + gap + 6, H * 0.38);
+    ctx.restore();
+
+    /* ── Fill layer (phases 0.75–1.0 of cycle) ── */
+    const cyclePos = (t % CYCLE) / CYCLE;
+    let fillOpacity = 0;
+    if (cyclePos > 0.73 && cyclePos < 0.93) {
+      fillOpacity = (cyclePos - 0.73) / 0.2;
+    } else if (cyclePos >= 0.93) {
+      fillOpacity = 1 - (cyclePos - 0.93) / 0.07;
+    }
+    if (fillOpacity > 0) {
+      const fillH = H * 0.35;
+      const fillG = ctx.createLinearGradient(0, H - fillH, 0, H);
+      fillG.addColorStop(0, `rgba(0,102,255,0)`);
+      fillG.addColorStop(1, `rgba(0,102,255,${0.65 * fillOpacity})`);
+      ctx.fillStyle = fillG;
+      ctx.fillRect(cx - gap, H - fillH, CRACK_W, fillH);
+    }
+
+    /* ── Particles ── */
+    for (const p of particles) {
+      const age = ((t / CYCLE * p.speed) + p.phase) % 1;
+      /* fade in / out */
+      let alpha;
+      if (age < 0.12) alpha = age / 0.12;
+      else if (age > 0.82) alpha = (1 - age) / 0.18;
+      else alpha = 1;
+
+      const py = age * (H + 20) - 10;
+      const px = cx + p.wobble * Math.sin(py * 0.06) * 5;
+
+      /* settling scale */
+      const scale = age > 0.72 ? 1 + (age - 0.72) * 0.8 : 1;
+
+      /* glow */
+      const gr = ctx.createRadialGradient(px, py, 0, px, py, p.r * 5 * scale);
+      gr.addColorStop(0, `rgba(0,102,255,${0.25 * alpha})`);
+      gr.addColorStop(1, 'rgba(0,102,255,0)');
+      ctx.beginPath();
+      ctx.arc(px, py, p.r * 5 * scale, 0, Math.PI * 2);
+      ctx.fillStyle = gr;
+      ctx.fill();
+
+      /* core */
+      ctx.beginPath();
+      ctx.arc(px, py, p.r * scale, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(0,136,255,${alpha})`;
+      ctx.fill();
+    }
+  }
+
+  function loop(ts) {
+    if (!startTime) startTime = ts;
+    drawScene(ts - startTime);
+    rafId = requestAnimationFrame(loop);
+  }
+
+  /* Trigger on visibility */
+  const obs = new IntersectionObserver(([e]) => {
+    if (e.isIntersecting) {
+      resize();
+      spawnParticles();
+      rafId = requestAnimationFrame(loop);
+      obs.disconnect();
+    }
+  }, { threshold: 0.25 });
+  obs.observe(canvas);
+
+  window.addEventListener('resize', () => {
+    cancelAnimationFrame(rafId);
+    startTime = null;
+    resize();
+    spawnParticles();
+    rafId = requestAnimationFrame(loop);
+  }, { passive: true });
+})();
+
 /* ═══ 9. CHART: Oil Rate Case Study ═══ */
 (function initOilRateChart() {
   const ctx = document.getElementById('oilRateChart');

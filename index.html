@@ -339,21 +339,17 @@
 
     <div class="kpi-grid">
       <div class="kpi-card kpi-blue" style="animation-delay:0s">
-        <div class="kpi-number" data-target="350">0</div>
-        <div class="kpi-suffix">+</div>
-        <div class="kpi-label">Завершённых операций РИР</div>
-        <div class="kpi-sparkline">
-          <canvas id="spark1"></canvas>
-        </div>
-      </div>
-      <div class="kpi-card kpi-green" style="animation-delay:0.2s">
-        <div class="kpi-number kpi-decimal" data-target-text="14,5х">0</div>
+        <div class="kpi-number kpi-decimal" data-target-text="14,5×">0</div>
         <div class="kpi-suffix"></div>
         <div class="kpi-label">Рост дебита нефти</div>
-        <div class="kpi-sublabel">В среднем увеличение в 10–15 раз</div>
-        <div class="kpi-sparkline">
-          <canvas id="spark2"></canvas>
-        </div>
+        <div class="kpi-sublabel">С 1,1 до 16 т/сут в среднем</div>
+        <div class="kpi-sparkline"><canvas id="spark1"></canvas></div>
+      </div>
+      <div class="kpi-card kpi-green" style="animation-delay:0.2s">
+        <div class="kpi-number" data-target="95">0</div>
+        <div class="kpi-suffix">%</div>
+        <div class="kpi-label">Успешность операций</div>
+        <div class="kpi-sparkline"><canvas id="spark2"></canvas></div>
       </div>
       <div class="kpi-card kpi-purple" style="animation-delay:0.4s">
         <div class="kpi-number" data-target="60">0</div>
@@ -365,13 +361,11 @@
         </div>
       </div>
       <div class="kpi-card kpi-orange" style="animation-delay:0.6s">
-        <div class="kpi-number kpi-range" data-target-text="12–15">0</div>
-        <div class="kpi-suffix">дней</div>
-        <div class="kpi-label">Окупаемость работ</div>
-        <div class="kpi-sublabel">Быстрый возврат инвестиций</div>
-        <div class="kpi-sparkline">
-          <canvas id="spark4"></canvas>
-        </div>
+        <div class="kpi-number kpi-decimal" data-target-text="3,5 мкм">0</div>
+        <div class="kpi-suffix"></div>
+        <div class="kpi-label">Размер частиц (D50)</div>
+        <div class="kpi-sublabel">В 14–28 раз меньше обычного цемента</div>
+        <div class="kpi-sparkline"><canvas id="spark4"></canvas></div>
       </div>
     </div>
 
@@ -387,48 +381,36 @@
             </div>
           </div>
         </div>
-        <div class="case-steps">
-          <div class="step-item step-done">
-            <div class="step-dot"></div>
-            <div class="step-content">
-              <div class="step-title">Диагностика проблемы</div>
-              <div class="step-desc">Обводнённость скважины достигла 92%. Высокий темп роста ВГФ.</div>
-              <div class="step-meta">День 0</div>
+        <!-- RIGHT: Particle penetration animation -->
+        <div class="penetration-panel">
+          <div class="pen-title">Механизм проникновения NanoCem UT-9</div>
+          <div class="pen-canvas-wrap">
+            <canvas id="penCanvas"></canvas>
+            <div class="pen-label pen-label-top">
+              <span class="pen-arrow">↓</span>
+              <span>Частицы NanoCem UT-9<br><b>Размер: 3,5 мкм</b></span>
+            </div>
+            <div class="pen-label pen-label-mid">
+              <span>Глубокое проникновение<br>в трещины от 0,02 мм</span>
+              <span class="pen-arrow pen-al">←</span>
+            </div>
+            <div class="pen-label pen-label-bot">
+              <span>Формирование монолитного<br>цементного барьера</span>
+              <span class="pen-arrow pen-al">←</span>
             </div>
           </div>
-          <div class="step-item step-done">
-            <div class="step-dot"></div>
-            <div class="step-content">
-              <div class="step-title">Закачка NanoCem UT-9</div>
-              <div class="step-desc">Объём: 3,5 т. Давление продавки: 18 МПа. Время операции: 6 часов.</div>
-              <div class="step-meta">День 3</div>
+          <div class="pen-legend">
+            <div class="pen-legend-item">
+              <span class="pen-dot" style="background:#999"></span>
+              <span>Обычный цемент (50–100 мкм) — <b>не проникает</b></span>
             </div>
-          </div>
-          <div class="step-item step-done">
-            <div class="step-dot"></div>
-            <div class="step-content">
-              <div class="step-title">Первые результаты</div>
-              <div class="step-desc">Дебит нефти вырос с 1,1 до 7,5 т/сут. Обводнённость снизилась до 56%.</div>
-              <div class="step-meta">День 7</div>
-            </div>
-          </div>
-          <div class="step-item step-done">
-            <div class="step-dot"></div>
-            <div class="step-content">
-              <div class="step-title">Стабилизация показателей</div>
-              <div class="step-desc">Дебит нефти: 16 т/сут (+1450%). Обводнённость: 26% (−66 п.п.)</div>
-              <div class="step-meta">День 14</div>
-            </div>
-          </div>
-          <div class="step-item step-done">
-            <div class="step-dot"></div>
-            <div class="step-content">
-              <div class="step-title">Подтверждение эффективности</div>
-              <div class="step-desc">Стабильные показатели без деградации. Добыча +5&#8239;400 т/год.</div>
-              <div class="step-meta">День 30+</div>
+            <div class="pen-legend-item">
+              <span class="pen-dot" style="background:#0066FF"></span>
+              <span>NanoCem UT-9 (3,5 мкм) — <b>полное заполнение</b></span>
             </div>
           </div>
         </div>
+
 
       </div>
     </div>
