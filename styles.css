@@ -1184,7 +1184,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   .logo-nano { display: none; }
   .logo-model { display: none; }
   .logo-dot { display: none; }
-  .logo-easymix { font-size: 1.1rem; color: var(--c-accent); }
+  .logo-easymix { font-size: 1.1rem; color: #059669; }
   .nav-logo { gap: 0; }
   .hero-title { font-size: clamp(2.4rem, 11vw, 3.5rem); }
   .hero-brand-row { padding: 6px 12px; }
