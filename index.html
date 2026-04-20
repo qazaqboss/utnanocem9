@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EasyMix · NanoCem UT-9 — ТОО ЭкоМикс Актобе</title>
+  <meta name="description" content="ТОО ЭкоМикс (Актобе, Казахстан) — NanoCem UT-9, ультрадисперсный тампонажный цемент для нефтегазовой отрасли Казахстана. Проникает в микротрещины от 0,02 мм, прочность до 75 МПа." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- ═══════════════ NAVIGATION ═══════════════ -->
+<nav class="nav" id="navbar">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <span class="logo-easymix">EasyMix</span>
+      <span class="logo-dot">·</span>
+      <span class="logo-nano">NanoCem</span>
+      <span class="logo-model">UT‑9</span>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#dispersity" class="nav-link">Дисперсность</a></li>
+      <li><a href="#application" class="nav-link">Применение</a></li>
+      <li><a href="#results" class="nav-link">Результаты</a></li>
+      <li><a href="#comparison" class="nav-link">Сравнение</a></li>
+      <li><a href="#calculator" class="nav-link">Калькулятор</a></li>
+    </ul>
+    <a href="#calculator" class="btn-nav">Получить расчёт</a>
+    <button class="nav-burger" id="navBurger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero" id="hero">
+  <div class="hero-bg">
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-grid"></div>
+    <canvas class="hero-particles" id="particlesCanvas"></canvas>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      Новое поколение тампонажных материалов
+    </div>
+    <div class="hero-brand-row">
+      <span class="hero-brand-em">EasyMix</span>
+      <span class="hero-brand-sep">×</span>
+      <span class="hero-brand-nc">NanoCem UT‑9</span>
+    </div>
+    <h1 class="hero-title">
+      <span class="title-line-1">Ультра</span>
+      <span class="title-line-2">дисперсный</span>
+      <span class="title-line-3">цемент</span>
+    </h1>
+    <p class="hero-desc">
+      Проникает в микротрещины от <strong>0,02 мм</strong>. Формирует монолитный камень прочностью до <strong>75 МПа</strong>. Решает задачи, недоступные стандартному цементу.
+    </p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="stat-value">3.5</span>
+        <span class="stat-unit">мкм</span>
+        <span class="stat-label">Медианный размер частиц</span>
+      </div>
+      <div class="hero-stat">
+        <span class="stat-value">75</span>
+        <span class="stat-unit">МПа</span>
+        <span class="stat-label">Прочность на 28 суток</span>
+      </div>
+      <div class="hero-stat">
+        <span class="stat-value">0.02</span>
+        <span class="stat-unit">мм</span>
+        <span class="stat-label">Минимальная трещина</span>
+      </div>
+      <div class="hero-stat">
+        <span class="stat-value">95</span>
+        <span class="stat-unit">%</span>
+        <span class="stat-label">Эффективность при РИР</span>
+      </div>
+    </div>
+    <div class="hero-cta">
+      <a href="#dispersity" class="btn-primary">Изучить характеристики</a>
+      <a href="#results" class="btn-ghost">Смотреть результаты</a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span>Листайте вниз</span>
+    <div class="scroll-indicator"></div>
+  </div>
+</section>
+
+<!-- ═══════════════ DISPERSITY ═══════════════ -->
+<section class="section dispersity-section" id="dispersity">
+  <div class="container">
+    <div class="section-label">— Дисперсность</div>
+    <h2 class="section-title">Частицы, которые проникают<br>туда, куда другие не могут</h2>
+    <p class="section-desc">Уникальный помол обеспечивает размер частиц в 15–30 раз меньше стандартного портландцемента, что принципиально меняет инъекционные возможности.</p>
+
+    <div class="dispersity-grid">
+      <div class="dispersity-chart-area">
+        <div class="chart-card">
+          <div class="chart-title">Сравнение гранулометрии частиц</div>
+          <div class="chart-wrap">
+            <canvas id="particleSizeChart"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="dispersity-metrics">
+        <div class="metric-card metric-primary">
+          <div class="metric-label">D50 — МЕДИАНА</div>
+          <div class="metric-value">~3,5 <span class="metric-unit">мкм</span></div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">D95 — 95-й перцентиль</div>
+          <div class="metric-value">≤ 9,5 <span class="metric-unit">мкм</span></div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Проникновение</div>
+          <div class="metric-value">от 0,02 <span class="metric-unit">мм</span></div>
+        </div>
+        <div class="metric-card metric-accent">
+          <div class="metric-label">vs Стандартный цемент</div>
+          <div class="metric-value">в 15–30 <span class="metric-unit">× меньше</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Penetration comparison bar chart -->
+    <div class="chart-row">
+      <div class="chart-card chart-card-wide">
+        <div class="chart-title">Проникающая способность в трещины (мм)</div>
+        <div class="chart-wrap chart-wrap-md">
+          <canvas id="penetrationChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-card chart-card-wide">
+        <div class="chart-title">Прочность камня vs время (МПа)</div>
+        <div class="chart-wrap chart-wrap-md">
+          <canvas id="strengthChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ APPLICATION ═══════════════ -->
+<section class="section application-section dark-section" id="application">
+  <div class="container">
+    <div class="section-label light">— Применение</div>
+    <h2 class="section-title light">Нефтегаз и строительство</h2>
+    <p class="section-desc light">Универсальное решение для задач, требующих глубокого проникновения и надёжной герметизации.</p>
+
+    <div class="app-grid">
+      <div class="app-card" data-delay="0">
+        <div class="app-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <h3 class="app-title">Первичное цементирование</h3>
+        <p class="app-desc">Интервалы с низкой проницаемостью, микротрещиноватые зоны, сложные геологические условия.</p>
+        <div class="app-tags">
+          <span class="tag">0,01–1 мД</span>
+          <span class="tag">Микротрещины</span>
+        </div>
+      </div>
+      <div class="app-card" data-delay="100">
+        <div class="app-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        </div>
+        <h3 class="app-title">Ремонтно-изоляционные работы</h3>
+        <p class="app-desc">Ликвидация заколонных перетоков, squeeze-цементирование, изоляция водопритоков.</p>
+        <div class="app-tags">
+          <span class="tag">Перетоки</span>
+          <span class="tag">Squeeze</span>
+          <span class="tag">Обводнение</span>
+        </div>
+      </div>
+      <div class="app-card" data-delay="200">
+        <div class="app-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        </div>
+        <h3 class="app-title">Специальные условия</h3>
+        <p class="app-desc">Зоны потери циркуляции, повышенные температуры и давления, минерализованные растворы.</p>
+        <div class="app-tags">
+          <span class="tag">120°C</span>
+          <span class="tag">ВП</span>
+        </div>
+      </div>
+      <div class="app-card" data-delay="300">
+        <div class="app-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>
+        </div>
+        <h3 class="app-title">Укрепление грунтов</h3>
+        <p class="app-desc">Консолидация слабых оснований, усиление фундаментов, стабилизация грунтовых массивов.</p>
+        <div class="app-tags">
+          <span class="tag">Фундаменты</span>
+          <span class="tag">Грунты</span>
+        </div>
+      </div>
+      <div class="app-card" data-delay="400">
+        <div class="app-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3 class="app-title">Гидроизоляция</h3>
+        <p class="app-desc">Противофильтрационные завесы, герметизация подземных конструкций, защита от подтопления.</p>
+        <div class="app-tags">
+          <span class="tag">Завесы</span>
+          <span class="tag">Герметизация</span>
+        </div>
+      </div>
+      <div class="app-card" data-delay="500">
+        <div class="app-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12h18M3 6h18M3 18h18"/><circle cx="7" cy="12" r="1" fill="currentColor"/></svg>
+        </div>
+        <h3 class="app-title">Тоннельное строительство</h3>
+        <p class="app-desc">Инъекционное укрепление обделок, тампонаж пустот за обделкой, остановка водопритоков.</p>
+        <div class="app-tags">
+          <span class="tag">Тоннели</span>
+          <span class="tag">Инъекции</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Radar chart -->
+    <div class="radar-section">
+      <div class="chart-card dark-card">
+        <div class="chart-title light">Сравнение характеристик по областям применения</div>
+        <div class="chart-wrap chart-wrap-radar">
+          <canvas id="radarChart"></canvas>
+        </div>
+      </div>
+      <div class="radar-legend">
+        <h3 class="radar-title">Ключевые преимущества</h3>
+        <div class="adv-item">
+          <div class="adv-icon adv-1">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div>
+            <div class="adv-name">Высокая проникающая способность</div>
+            <div class="adv-desc">В 15–30 раз эффективнее обычного цемента</div>
+          </div>
+        </div>
+        <div class="adv-item">
+          <div class="adv-icon adv-2">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div>
+            <div class="adv-name">Быстрый набор прочности</div>
+            <div class="adv-desc">14 МПа через 24 часа, 75 МПа через 28 суток</div>
+          </div>
+        </div>
+        <div class="adv-item">
+          <div class="adv-icon adv-3">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div>
+            <div class="adv-name">Термостабильность</div>
+            <div class="adv-desc">Работает при температурах до 120°C</div>
+          </div>
+        </div>
+        <div class="adv-item">
+          <div class="adv-icon adv-4">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div>
+            <div class="adv-name">Химическая стойкость</div>
+            <div class="adv-desc">Устойчивость к минерализованным флюидам</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ RESULTS ═══════════════ -->
+<section class="section results-section" id="results">
+  <div class="container">
+    <div class="section-label">— Результаты</div>
+    <h2 class="section-title">Доказанная эффективность</h2>
+    <p class="section-desc">Статистика по реальным объектам применения NanoCem UT-9 в нефтегазовой отрасли.</p>
+
+    <div class="kpi-grid">
+      <div class="kpi-card kpi-blue">
+        <div class="kpi-number" data-target="350">0</div>
+        <div class="kpi-suffix">+</div>
+        <div class="kpi-label">Завершённых операций РИР</div>
+        <div class="kpi-sparkline">
+          <canvas id="spark1"></canvas>
+        </div>
+      </div>
+      <div class="kpi-card kpi-green">
+        <div class="kpi-number" data-target="95">0</div>
+        <div class="kpi-suffix">%</div>
+        <div class="kpi-label">Успешность операций</div>
+        <div class="kpi-sparkline">
+          <canvas id="spark2"></canvas>
+        </div>
+      </div>
+      <div class="kpi-card kpi-purple">
+        <div class="kpi-number" data-target="40">0</div>
+        <div class="kpi-suffix">%</div>
+        <div class="kpi-label">Снижение водяного потока</div>
+        <div class="kpi-sparkline">
+          <canvas id="spark3"></canvas>
+        </div>
+      </div>
+      <div class="kpi-card kpi-orange">
+        <div class="kpi-number" data-target="148">0</div>
+        <div class="kpi-suffix">K $</div>
+        <div class="kpi-label">Средняя экономия на скважину</div>
+        <div class="kpi-sparkline">
+          <canvas id="spark4"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Timeline / Case study -->
+    <div class="case-section">
+      <h3 class="case-heading">Кейс: Актюбинская область, месторождение Х</h3>
+      <div class="case-grid">
+        <div class="case-chart-area">
+          <div class="chart-card">
+            <div class="chart-title">Дебит нефти до и после РИР (т/сут)</div>
+            <div class="chart-wrap chart-wrap-md">
+              <canvas id="oilRateChart"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="case-steps">
+          <div class="step-item step-done">
+            <div class="step-dot"></div>
+            <div class="step-content">
+              <div class="step-title">Диагностика проблемы</div>
+              <div class="step-desc">Обводнённость скважины достигла 92%. Высокий темп роста ВГФ.</div>
+              <div class="step-meta">День 0</div>
+            </div>
+          </div>
+          <div class="step-item step-done">
+            <div class="step-dot"></div>
+            <div class="step-content">
+              <div class="step-title">Закачка NanoCem UT-9</div>
+              <div class="step-desc">Объём: 3,5 т. Давление продавки: 18 МПа. Время операции: 6 часов.</div>
+              <div class="step-meta">День 3</div>
+            </div>
+          </div>
+          <div class="step-item step-done">
+            <div class="step-dot"></div>
+            <div class="step-content">
+              <div class="step-title">Ввод в эксплуатацию</div>
+              <div class="step-desc">Обводнённость снизилась до 28%. Дебит нефти вырос в 2,4 раза.</div>
+              <div class="step-meta">День 7</div>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-dot"></div>
+            <div class="step-content">
+              <div class="step-title">Экономический эффект</div>
+              <div class="step-desc">Дополнительная добыча: 1 200 т нефти за 6 месяцев. ROI > 800%.</div>
+              <div class="step-meta">+6 мес</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ COMPARISON ═══════════════ -->
+<section class="section comparison-section dark-section" id="comparison">
+  <div class="container">
+    <div class="section-label light">— Сравнение</div>
+    <h2 class="section-title light">NanoCem UT-9 vs Альтернативы</h2>
+    <p class="section-desc light">Объективное сравнение ключевых характеристик с аналогами на рынке.</p>
+
+    <div class="table-wrapper">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Характеристика</th>
+            <th class="col-highlight">NanoCem UT-9</th>
+            <th>Портландцемент</th>
+            <th>Микроцемент</th>
+            <th>Полимеры</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>D50, мкм</td>
+            <td class="col-highlight"><span class="val-best">3,5</span></td>
+            <td>50–80</td>
+            <td>8–16</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td>Минимальная трещина, мм</td>
+            <td class="col-highlight"><span class="val-best">0,02</span></td>
+            <td>0,5–1,0</td>
+            <td>0,1–0,2</td>
+            <td>0,05–0,2</td>
+          </tr>
+          <tr>
+            <td>Прочность 28 сут, МПа</td>
+            <td class="col-highlight"><span class="val-best">75</span></td>
+            <td>30–45</td>
+            <td>50–60</td>
+            <td>15–30</td>
+          </tr>
+          <tr>
+            <td>Темп. применения, °C</td>
+            <td class="col-highlight"><span class="val-best">до 120</span></td>
+            <td>до 100</td>
+            <td>до 80</td>
+            <td>до 60</td>
+          </tr>
+          <tr>
+            <td>Химическая стойкость</td>
+            <td class="col-highlight"><span class="val-best">Высокая</span></td>
+            <td>Средняя</td>
+            <td>Средняя</td>
+            <td>Высокая</td>
+          </tr>
+          <tr>
+            <td>Экол. безопасность</td>
+            <td class="col-highlight"><span class="val-best">✓ Полная</span></td>
+            <td>✓ Полная</td>
+            <td>✓ Полная</td>
+            <td>⚠ Ограничена</td>
+          </tr>
+          <tr>
+            <td>Успешность РИР</td>
+            <td class="col-highlight"><span class="val-best">95%</span></td>
+            <td>55%</td>
+            <td>72%</td>
+            <td>68%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Bar comparison -->
+    <div class="chart-row mt-40">
+      <div class="chart-card dark-card chart-card-wide">
+        <div class="chart-title light">Успешность РИР по типам материала (%)</div>
+        <div class="chart-wrap chart-wrap-md">
+          <canvas id="successChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-card dark-card chart-card-wide">
+        <div class="chart-title light">Прочность камня на 28 сутки (МПа)</div>
+        <div class="chart-wrap chart-wrap-md">
+          <canvas id="strengthCompChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ CALCULATOR ═══════════════ -->
+<section class="section calculator-section" id="calculator">
+  <div class="container">
+    <div class="section-label">— Калькулятор</div>
+    <h2 class="section-title">Экономический расчёт</h2>
+    <p class="section-desc">Оцените потенциальный эффект от применения NanoCem UT-9 на вашем объекте.</p>
+
+    <div class="calc-layout">
+      <div class="calc-form-area">
+        <div class="calc-form">
+          <h3 class="calc-form-title">Параметры объекта</h3>
+
+          <div class="calc-field">
+            <label class="calc-label" for="wellCount">Количество скважин</label>
+            <input type="range" id="wellCount" min="1" max="50" value="5" class="calc-range" />
+            <div class="calc-range-val"><span id="wellCountVal">5</span> скважин</div>
+          </div>
+
+          <div class="calc-field">
+            <label class="calc-label" for="waterCut">Текущая обводнённость (%)</label>
+            <input type="range" id="waterCut" min="50" max="98" value="85" class="calc-range" />
+            <div class="calc-range-val"><span id="waterCutVal">85</span>%</div>
+          </div>
+
+          <div class="calc-field">
+            <label class="calc-label" for="oilPrice">Цена нефти ($/барр)</label>
+            <input type="range" id="oilPrice" min="40" max="120" value="70" class="calc-range" />
+            <div class="calc-range-val">$<span id="oilPriceVal">70</span></div>
+          </div>
+
+          <div class="calc-field">
+            <label class="calc-label" for="wellRate">Дебит скважины (т/сут)</label>
+            <input type="range" id="wellRate" min="5" max="200" value="30" class="calc-range" />
+            <div class="calc-range-val"><span id="wellRateVal">30</span> т/сут</div>
+          </div>
+
+          <button class="btn-primary btn-full" id="calcBtn">Рассчитать эффект</button>
+        </div>
+      </div>
+
+      <div class="calc-results-area">
+        <div class="calc-results" id="calcResults">
+          <div class="result-main">
+            <div class="result-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </div>
+            <div class="result-label">Прогнозируемый доход (USD)</div>
+            <div class="result-value" id="resultRevenue">$ —</div>
+          </div>
+          <div class="result-grid">
+            <div class="result-item">
+              <div class="result-item-label">Доп. добыча нефти</div>
+              <div class="result-item-val" id="resultOil">— т</div>
+            </div>
+            <div class="result-item">
+              <div class="result-item-label">Снижение обводнённости</div>
+              <div class="result-item-val" id="resultWater">— %</div>
+            </div>
+            <div class="result-item">
+              <div class="result-item-label">Стоимость операции</div>
+              <div class="result-item-val" id="resultCost">$ —</div>
+            </div>
+            <div class="result-item">
+              <div class="result-item-label">ROI за 6 месяцев</div>
+              <div class="result-item-val result-roi" id="resultROI">— %</div>
+            </div>
+          </div>
+          <div class="result-chart-wrap">
+            <canvas id="roiChart" height="200"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ CONTACT ═══════════════ -->
+<section class="section contact-section dark-section" id="contact">
+  <div class="container">
+    <div class="contact-inner">
+      <div class="contact-text">
+        <div class="section-label light">— Контакт</div>
+        <h2 class="section-title light">Готовы решить вашу задачу</h2>
+        <p class="section-desc light">Специалисты ТОО ЭкоМикс проведут анализ и предложат оптимальное решение для вашего объекта в Казахстане.</p>
+        <div class="contact-info">
+          <div class="contact-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <span>87075390000</span>
+          </div>
+          <div class="contact-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <span>info@easymix.kz</span>
+          </div>
+          <div class="contact-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span>Казахстан, Актобе, Промзона 679/17</span>
+          </div>
+        </div>
+      </div>
+      <div class="contact-form-area">
+        <form class="contact-form" id="contactForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Имя</label>
+              <input type="text" class="form-input" placeholder="Асет Сейткали" id="formName" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Компания</label>
+              <input type="text" class="form-input" placeholder="Компания" id="formCompany" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-input" placeholder="aset@company.kz" id="formEmail" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Задача</label>
+            <textarea class="form-input form-textarea" placeholder="Опишите задачу или объект..." id="formMessage"></textarea>
+          </div>
+          <button type="submit" class="btn-primary btn-full">Отправить заявку</button>
+          <div class="form-success" id="formSuccess">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            Заявка отправлена! Свяжемся в течение 2 часов.
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="nav-logo" style="font-size:1.15rem;margin-bottom:0.75rem;">
+          <span class="logo-easymix">EasyMix</span>
+          <span class="logo-dot">·</span>
+          <span class="logo-nano">NanoCem</span>
+          <span class="logo-model">UT‑9</span>
+        </div>
+        <p class="footer-tagline">ТОО ЭкоМикс — официальный поставщик NanoCem UT-9 для нефтегазовой отрасли Казахстана.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <div class="footer-col-title">Продукт</div>
+          <a href="#dispersity">Дисперсность</a>
+          <a href="#application">Применение</a>
+          <a href="#results">Результаты</a>
+          <a href="#comparison">Сравнение</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Компания</div>
+          <a href="#">О нас</a>
+          <a href="#">Сертификаты</a>
+          <a href="#">Новости</a>
+          <a href="#contact">Контакты</a>
+        </div>
+
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 ТОО ЭкоМикс · Актобе, Казахстан. Все права защищены.</span>
+      <span>СТ РК · TÜV Certified · БИН ТОО ЭкоМикс</span>
+    </div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
