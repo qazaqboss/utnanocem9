@@ -2009,3 +2009,26 @@ html, body { overflow-x: hidden; max-width: 100%; }
 
 /* ── KPI2 counter: keep visible so observer can fire ── */
 .kpi2-num.section-fade { opacity: 1 !important; transform: none !important; }
+
+/* ── RIR Dark Mode & Case Dark Mode Overrides ── */
+.rir-section.dark-section .rir-card {
+  background: #1e1e1e !important;
+  border-color: #333 !important;
+}
+.rir-section.dark-section .rir-card-title { color: #fff !important; }
+.rir-section.dark-section .rir-card-num { color: #fff !important; opacity: 0.8 !important; }
+.rir-section.dark-section .rir-card-sub { color: #aaa !important; }
+.rir-section.dark-section .rir-list li { color: #ddd !important; }
+.rir-section.dark-section .rir-marker { border-color: #fff !important; }
+
+/* Case343 Dark Mode */
+.case2-cols.dark-mode {
+  border: 1px solid #333 !important;
+}
+.case2-cols.dark-mode .case2-col { border-right: 1px solid #333 !important; border-bottom: 1px solid #333 !important; border-top: none !important; border-left: none !important; }
+.case2-cols.dark-mode .case2-col:nth-child(2) { border-left: 1px solid #333 !important; border-right: 1px solid #333 !important; }
+
+@media (max-width: 768px) {
+  .case2-cols.dark-mode .case2-col { border-right: none !important; border-left: none !important; border-bottom: 1px solid #333 !important; }
+  .case2-cols.dark-mode .case2-col:nth-child(2) { border-right: none !important; border-left: none !important; }
+}
