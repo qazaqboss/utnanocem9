@@ -127,6 +127,17 @@ html, body { overflow-x: hidden; max-width: 100%; }
   color: var(--c-text);
   background: rgba(0,0,0,0.05);
 }
+.nav-link-case {
+  border: 1px solid var(--c-border) !important;
+  border-radius: 20px !important;
+  font-weight: 600 !important;
+  color: var(--c-text) !important;
+}
+.nav-link-case:hover {
+  background: var(--c-text) !important;
+  color: var(--c-bg) !important;
+  border-color: var(--c-text) !important;
+}
 .btn-nav {
   display: inline-flex;
   align-items: center;
