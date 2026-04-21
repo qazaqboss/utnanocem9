@@ -1982,3 +1982,30 @@ html, body { overflow-x: hidden; max-width: 100%; }
 }
 
 
+
+/* ── LIGHT BACKGROUND: compare-table overrides ── */
+#specs .compare-table th,
+#specs .compare-table td {
+  border-bottom: 1px solid #e5e5e5;
+}
+#specs .compare-table th {
+  color: #666 !important;
+  background: #fafafa !important;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+#specs .compare-table td { color: #333 !important; }
+#specs .compare-table td:first-child { color: #666 !important; font-size: 0.8125rem; }
+#specs .col-highlight { background: rgba(0,0,0,0.04) !important; }
+#specs .col-highlight th { color: #000 !important; }
+#specs .val-best { color: #000 !important; font-weight: 800; }
+#specs .compare-table tr:hover td { color: #000 !important; background: #f5f5f5; }
+
+/* ── Case chart canvas height ── */
+.case2-chart-wrap { height: 240px; position: relative; }
+.case2-chart-wrap canvas { width: 100% !important; height: 100% !important; }
+
+/* ── KPI2 counter: keep visible so observer can fire ── */
+.kpi2-num.section-fade { opacity: 1 !important; transform: none !important; }

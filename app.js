@@ -127,7 +127,7 @@ Chart.defaults.color = '#6B6B6B';
   }, { threshold: 0.1 });
   appCards.forEach(c => cardObserver.observe(c));
 
-  /* KPI counter animation */
+  /* KPI counter animation — low threshold so it fires when card enters viewport */
   const kpiNumbers = document.querySelectorAll('.kpi-number, .kpi2-num');
   const kpiObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -136,8 +136,18 @@ Chart.defaults.color = '#6B6B6B';
         kpiObserver.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.5 });
+  }, { threshold: 0.1 });
   kpiNumbers.forEach(n => kpiObserver.observe(n));
+  /* Fallback: if already in viewport on load */
+  setTimeout(() => {
+    kpiNumbers.forEach(n => {
+      const rect = n.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom > 0) {
+        animateCounter(n);
+        kpiObserver.unobserve(n);
+      }
+    });
+  }, 600);
 })();
 
 function animateCounter(el) {
@@ -998,12 +1008,13 @@ function makeSparkline(id, data, color) {
   const style = document.createElement("style");
   style.textContent = ".section-fade{opacity:0;transform:translateY(28px);transition:opacity .65s ease,transform .65s ease} .section-fade.in{opacity:1;transform:translateY(0)} .nav-link.active{color:var(--c-text)!important;background:rgba(0,0,0,.06)!important}";
   document.head.appendChild(style);
-  document.querySelectorAll(".sec-title,.sec-sub,.chart-card,.kpi2-card,.task-card,.why-metric,.econ-card,.case2-col,.ba-panel,.h2m-card")
+  /* NOTE: kpi2-card intentionally excluded — counters need elements visible */
+  document.querySelectorAll(".sec-title,.sec-sub,.chart-card,.task-card,.why-metric,.econ-card,.case2-col,.ba-panel,.h2m-card")
     .forEach(el => {
       el.classList.add("section-fade");
       const obs = new IntersectionObserver(([entry]) => {
         if (entry.isIntersecting) { el.classList.add("in"); obs.unobserve(el); }
-      }, { threshold: 0.08 });
+      }, { threshold: 0.05 });
       obs.observe(el);
     });
 })();
