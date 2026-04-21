@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Презентация: NanoCem UT-9</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap');
+    
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #e2e2e2;
+      color: #000;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+    
+    /* Presentation Container */
+    #pres-container {
+      width: 100vw;
+      height: 100vh;
+      overflow-y: scroll;
+      scroll-snap-type: y mandatory;
+    }
+    
+    /* Auto scale wrapper */
+    .slide-wrapper {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      scroll-snap-align: start;
+      page-break-after: always;
+    }
+
+    /* Fixed 1920x1080 slide */
+    .slide {
+      width: 1920px;
+      height: 1080px;
+      background: #FFF;
+      position: relative;
+      /* By default we assume a 1080p screen. We will inject a JS scaler to fit it perfectly */
+      transform-origin: center center;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+      padding: 80px;
+      overflow: hidden;
+    }
+    
+    /* Print Styles for PDF export */
+    @media print {
+      body { background: #fff; }
+      #pres-container { overflow: visible; height: auto; display: block; }
+      .slide-wrapper { height: auto; page-break-after: always; display: block; width: 1920px; height: 1080px; }
+      .slide { box-shadow: none; transform: scale(1) !important; position: static; margin-bottom: 0; }
+      @page { size: 1920px 1080px; margin: 0; }
+    }
+
+    /* ─── TYPOGRAPHY & COLORS ─── */
+    .text-black { color: #000000; }
+    .text-white { color: #FFFFFF; }
+    .text-dark-gray { color: #333333; }
+    .text-gray { color: #666666; }
+    .text-light-gray { color: #999999; }
+    
+    .bg-black { background: #000; }
+    .bg-white { background: #fff; }
+    .bg-light { background: #F5F5F5; }
+
+    /* ─── SLIDE 1: TITLE ─── */
+    .s1-content {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding-top: 15%; /* Roughly 25% adjusted */
+    }
+    .s1-title { font-size: 72px; font-weight: 700; color: #000; text-align: center; }
+    .s1-sub { font-size: 28px; font-weight: 400; color: #333; text-align: center; line-height: 1.4; margin-top: 20px; }
+    .s1-badge {
+      background: #000; color: #fff;
+      font-size: 22px; font-weight: 500;
+      padding: 20px 60px; border-radius: 50px;
+      display: inline-block; margin-top: 60px;
+    }
+    .s1-footer {
+      position: absolute; bottom: 40px; left: 0; width: 100%;
+      text-align: center; font-size: 14px; font-weight: 400; color: #999;
+    }
+
+    /* ─── COMMON TITLE STYLES ─── */
+    .slide-title { font-size: 48px; font-weight: 700; color: #000; margin-top: 60px; margin-bottom: 40px; }
+    
+    /* ─── SLIDE 2: PROBLEM/SOLUTION ─── */
+    .s2-cols { display: flex; align-items: stretch; justify-content: space-between; height: 700px; }
+    .s2-col-left { width: 45%; background: #F5F5F5; border: 3px solid #E74C3C; border-radius: 12px; padding: 40px; display: flex; flex-direction: column; }
+    .s2-col-mid { width: 10%; display: flex; align-items: center; justify-content: center; font-size: 80px; font-weight: bold; color: #000;}
+    .s2-col-right { width: 45%; background: #000; border-radius: 12px; padding: 40px; color: #fff; display: flex; flex-direction: column; }
+    
+    .s2-col-title { font-size: 32px; font-weight: 700; margin-bottom: 30px; }
+    .s2-list { font-size: 20px; font-weight: 400; line-height: 1.8; list-style: none; flex-grow: 1;}
+    .s2-list li::before { content: "• "; color: inherit; }
+    .s2-bottom-text { font-size: 22px; font-weight: 700; line-height: 1.4; margin-top: auto; }
+    
+    .s2-right-name { font-size: 28px; font-weight: 700; margin-bottom: 20px; }
+    .s2-right-list { font-size: 20px; font-weight: 400; line-height: 1.8; list-style: none; flex-grow: 1; }
+    
+    /* ─── SLIDE 3: WHY IT WORKS ─── */
+    .s3-table-wrap { width: 100%; max-width: 1600px; margin: 0 auto; clear: both; }
+    .s3-table { width: 100%; border-collapse: collapse; }
+    .s3-table th { background: #000; color: #fff; font-size: 24px; font-weight: 700; padding: 20px; text-align: center; width: 50%; }
+    .s3-table td { padding: 24px; font-size: 18px; text-align: center; border: 1px solid #CCC; line-height: 1.4; vertical-align: middle; }
+    .s3-table td:first-child { background: #F5F5F5; }
+    .s3-table td:last-child { background: #fff; }
+    .s3-table strong { font-weight: 700; font-size: 18px; }
+    
+    .s3-badge {
+      background: #000; color: #fff;
+      font-size: 26px; font-weight: 700;
+      padding: 24px 40px; border-radius: 8px;
+      text-align: center; margin: 40px auto 0;
+      width: max-content; display: block;
+    }
+
+    /* ─── SLIDE 4: EFFICIENCY ─── */
+    .s4-sub { font-size: 22px; color: #666; margin-bottom: 60px; margin-top:-30px; }
+    .s4-grid { display: grid; grid-template-columns: 520px 520px; gap: 40px; justify-content: center; }
+    .s4-card {
+      width: 520px; height: 280px; border: 3px solid #000; border-radius: 12px;
+      padding: 40px; text-align: center;
+      display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 16px;
+    }
+    .s4-card-num { font-size: 64px; font-weight: 700; line-height: 1; }
+    .s4-card-title { font-size: 24px; font-weight: 700; }
+    .s4-card-desc { font-size: 18px; font-weight: 400; color: #666; line-height: 1.3;}
+    .s4-card.dark { background: #000; color: #fff; }
+    .s4-card.dark .s4-card-desc { color: rgba(255,255,255,0.9); }
+    .s4-card-icon { font-size: 48px; line-height: 1; font-weight: 700; color: #000; }
+    .s4-card.dark .s4-card-icon { color: #fff; }
+
+    /* ─── SLIDE 5: CASE 343 ─── */
+    .s5-cols { display: flex; justify-content: space-between; gap: 5%; }
+    .s5-col { width: 30%; border-radius: 8px; padding: 30px; display: flex; flex-direction: column; }
+    .s5-col-1 { background: #F5F5F5; border-left: 8px solid #000; }
+    .s5-col-2 { background: #FFF; border: 2px solid #000; }
+    .s5-col-3 { background: #000; color: #fff; }
+    
+    .s5-col-title { font-size: 28px; font-weight: 700; margin-bottom: 24px; }
+    .s5-col-2 .s5-col-title { font-size: 24px; }
+    
+    .s5-text-group { margin-bottom: 24px; font-size: 17px; line-height: 1.9;}
+    .s5-text-str { font-size: 18px; font-weight: 700; margin-bottom:4px; display: block;}
+    .s5-text-norm { font-size: 16px; line-height: 1.8;}
+    .s5-bottom-strong { font-size: 20px; font-weight: 700; margin-top: auto;}
+    .s5-col-3 .s5-text-group { color: #fff; }
+    
+    .s5-chart-wrap {
+      width: 900px; height: 180px; background: #F5F5F5;
+      margin: 40px auto 0; position: relative; border-radius: 8px;
+    }
+
+    /* ─── SLIDE 6: SPECS & CONTACTS ─── */
+    .s6-layout { display: flex; justify-content: space-between; gap: 40px; height: 750px;}
+    .s6-left { width: 60%; }
+    .s6-right { width: 40%; background: #000; color: #fff; padding: 40px; border-radius: 12px; display: flex; flex-direction: column;}
+    
+    .s6-table { width: 100%; border-collapse: collapse; border: 1px solid #CCC; border-radius: 8px; overflow: hidden; }
+    .s6-table td { padding: 16px 20px; height: 52px; vertical-align: middle;}
+    .s6-table tr:nth-child(odd) { background: #fff; }
+    .s6-table tr:nth-child(even) { background: #F9F9F9; }
+    .s6-table td:first-child { font-size: 16px; color: #666; width: 60%; border-right: 1px solid #eaeaea;}
+    .s6-table td:last-child { font-size: 18px; font-weight: 700; color: #000; width: 40%; }
+    
+    .s6-right-title { font-size: 32px; font-weight: 700; margin-bottom: 30px; }
+    .s6-right-list { font-size: 17px; line-height: 2; margin-bottom: 30px; list-style: none; }
+    .s6-right-sep { border-top: 1px solid rgba(255,255,255,0.3); margin: 20px 0; }
+    .s6-contact-name { font-size: 20px; font-weight: 700; margin-bottom: 12px; }
+    .s6-contact-info { font-size: 16px; line-height: 1.8; opacity: 0.9;}
+
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<div id="pres-container">
+
+  <!-- ================= СЛАЙД 1 ================= -->
+  <div class="slide-wrapper">
+    <div class="slide">
+      <div class="s1-content">
+        <div class="s1-title">NANOCEM UT-9</div>
+        <div class="s1-sub">Ультрадисперсный тампонажный цемент<br>для ремонтно-изоляционных работ</div>
+        <div class="s1-badge">Размер частиц 3,5 мкм — в 14-28 раз меньше обычного цемента</div>
+      </div>
+      <div class="s1-footer">ТОО «ЭкоМикс» | Казахстан, 2025</div>
+    </div>
+  </div>
+
+  <!-- ================= СЛАЙД 2 ================= -->
+  <div class="slide-wrapper">
+    <div class="slide">
+      <div class="slide-title" style="margin-top: 60px;">Проблема и решение</div>
+      <div class="s2-cols">
+        
+        <!-- Проблема -->
+        <div class="s2-col-left">
+          <div class="s2-col-title text-black">❌ ПРОБЛЕМА</div>
+          <div class="text-dark-gray" style="font-size:20px; font-weight:700; margin-bottom:20px;">Обводнение скважин через:</div>
+          <ul class="s2-list text-dark-gray">
+            <li>Заколонные перетоки</li>
+            <li>Микротрещины 0,03-0,15 мм</li>
+            <li>Каналы в цементном кольце</li>
+            <li>Межпластовые перетоки</li>
+          </ul>
+          <div class="s2-bottom-text text-black">
+            Обычный цемент (50-100 мкм)<br>
+            НЕ ПРОНИКАЕТ в микротрещины
+          </div>
+        </div>
+
+        <!-- Стрелка -->
+        <div class="s2-col-mid text-black">→</div>
+
+        <!-- Решение -->
+        <div class="s2-col-right">
+          <div class="s2-col-title text-white">✓ РЕШЕНИЕ</div>
+          <div class="s2-right-name">NanoCem UT-9</div>
+          <div style="font-size:20px; font-weight:700; margin-bottom:20px;">Частицы 3,5 мкм:</div>
+          <ul class="s2-right-list" style="list-style-type: '✓ ';">
+            <li style="padding-left:10px;">Проникают в трещины от 0,02 мм</li>
+            <li style="padding-left:10px;">Заполняют микроканалы</li>
+            <li style="padding-left:10px;">Создают непроницаемый барьер</li>
+            <li style="padding-left:10px;">Прочность 65-75 МПа</li>
+          </ul>
+          <div class="s2-bottom-text">
+            Изоляция перетоков<br>
+            на молекулярном уровне
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= СЛАЙД 3 ================= -->
+  <div class="slide-wrapper">
+    <div class="slide">
+      <div class="slide-title" style="margin-top: 60px; margin-bottom: 50px;">Секрет эффективности</div>
+      
+      <div class="s3-table-wrap">
+        <table class="s3-table">
+          <thead>
+            <tr>
+              <th>ОБЫЧНЫЙ ЦЕМЕНТ</th>
+              <th>NANOCEM UT-9</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>50-100 мкм</strong></td>
+              <td><strong>3,5 мкм</strong></td>
+            </tr>
+            <tr>
+              <td>Блокируется на поверхности<br><strong>❌ Не входит в трещины</strong></td>
+              <td>Глубокое проникновение<br><strong>✓ Заполняет от 0,02 мм</strong></td>
+            </tr>
+            <tr>
+              <td>Частичная<br>Каналы остаются открытыми</td>
+              <td>Полная<br>100% герметичность</td>
+            </tr>
+            <tr>
+              <td><strong>30-40 МПа</strong></td>
+              <td><strong>65-75 МПа</strong></td>
+            </tr>
+            <tr>
+              <td>Перетоки продолжаются<br><strong>❌ РИР неэффективен</strong></td>
+              <td>Перетоки ликвидированы<br><strong>✓ РИР успешен</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="s3-badge">
+        Частицы в 14-28 раз меньше → Проникновение в 14-28 раз глубже
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= СЛАЙД 4 ================= -->
+  <div class="slide-wrapper">
+    <div class="slide">
+      <div class="slide-title" style="margin-top: 60px; margin-bottom: 0;">Доказанная эффективность</div>
+      <div class="s4-sub">Реальные результаты по скважинам Казахстана</div>
+      
+      <div class="s4-grid">
+        <!-- 1 -->
+        <div class="s4-card" style="background:#fff;">
+          <div class="s4-card-icon">↗</div>
+          <div class="s4-card-num text-black">в 14,5 раза</div>
+          <div class="s4-card-title text-black">Рост дебита нефти</div>
+          <div class="s4-card-desc">с 1,1 до 16,0 т/сут<br>в среднем по скважинам</div>
+        </div>
+        <!-- 2 -->
+        <div class="s4-card" style="background:#F5F5F5; border-color:#000;">
+          <div class="s4-card-icon text-black">✓</div>
+          <div class="s4-card-num text-black">95%</div>
+          <div class="s4-card-title text-black">Успешность операций</div>
+          <div class="s4-card-desc">из 350+ завершённых<br>работ по РИР</div>
+        </div>
+        <!-- 3 -->
+        <div class="s4-card" style="background:#F5F5F5; border-color:#000;">
+          <div class="s4-card-icon text-black">↘</div>
+          <div class="s4-card-num text-black">60 п.п.</div>
+          <div class="s4-card-title text-black">Снижение обводнённости</div>
+          <div class="s4-card-desc">с 86% до 26%<br>в среднем по скважинам</div>
+        </div>
+        <!-- 4 -->
+        <div class="s4-card dark">
+          <div class="s4-card-icon">⏱</div>
+          <div class="s4-card-num">12-15 дней</div>
+          <div class="s4-card-title">Срок окупаемости</div>
+          <div class="s4-card-desc">быстрый возврат<br>инвестиций</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= СЛАЙД 5 ================= -->
+  <div class="slide-wrapper">
+    <div class="slide">
+      <div class="slide-title" style="margin-top: 60px; margin-bottom: 0;">Реальный кейс: Скважина 343</div>
+      <div class="s4-sub" style="margin-bottom: 50px;">Ликвидация заколонного перетока, Казахстан, 2024</div>
+
+      <div class="s5-cols">
+        <!-- 1 -->
+        <div class="s5-col s5-col-1">
+          <div class="s5-col-title text-black">❌ ДО РИР</div>
+          <div class="s5-text-group text-dark-gray">
+            Критическое состояние:<br><br>
+            Интервал: 620-680 м<br>
+            Обводнённость: 86%<br>
+            Дебит нефти: 1,1 т/сут
+          </div>
+          <div class="s5-text-group text-dark-gray">
+            Микротрещины 0,03-0,15 мм
+          </div>
+          <div class="s5-bottom-strong text-black">Статус: УБЫТОЧНАЯ</div>
+        </div>
+        <!-- 2 -->
+        <div class="s5-col s5-col-2">
+          <div class="s5-col-title text-black">⚙️ SQUEEZE-ЦЕМЕНТИРОВАНИЕ</div>
+          <div class="s5-text-group text-black">
+            <span class="s5-text-str">Материал:</span>
+            <span class="s5-text-norm">95 мешков NanoCem UT-9<br>Объём: 2,8 м³</span>
+          </div>
+          <div class="s5-text-group text-black">
+            <span class="s5-text-str">Закачка:</span>
+            <span class="s5-text-norm">Давление: 6-7 МПа<br>Время: 45 минут</span>
+          </div>
+          <div class="s5-text-group text-black" style="margin-top:auto;">
+            <span class="s5-text-str">Твердение:</span>
+            <span class="s5-text-norm">24 часа</span>
+          </div>
+        </div>
+        <!-- 3 -->
+        <div class="s5-col s5-col-3">
+          <div class="s5-col-title text-white">✓ РЕЗУЛЬТАТ</div>
+          <div class="s5-text-group">
+            Максимальный эффект:<br><br>
+            <span style="font-weight:700; font-size:19px;">Обводнённость: 26%</span><br>
+            <span style="font-weight:700; font-size:19px;">Дебит нефти: 16,0 т/сут</span>
+          </div>
+          <div class="s5-text-group">
+            Рост в 14,5 раз<br>
+            Снижение на 60 п.п.
+          </div>
+          <div class="s5-bottom-strong text-white" style="margin-top:0;">Окупаемость: 12 дней</div>
+          <div class="s5-bottom-strong text-white" style="margin-bottom:0;">Статус: РЕНТАБЕЛЬНАЯ</div>
+        </div>
+      </div>
+
+      <div class="s5-chart-wrap">
+        <canvas id="slidesChart"></canvas>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= СЛАЙД 6 ================= -->
+  <div class="slide-wrapper">
+    <div class="slide">
+      <div class="slide-title" style="margin-top: 60px; margin-bottom: 40px;">Технические характеристики</div>
+      
+      <div class="s6-layout">
+        <div class="s6-left">
+          <table class="s6-table">
+            <tbody>
+              <tr><td>Размер частиц D50</td><td>~3,5 мкм</td></tr>
+              <tr><td>Размер частиц D95</td><td>≤ 9,5 мкм</td></tr>
+              <tr><td>Минимальная трещина</td><td>от 0,02 мм</td></tr>
+              <tr><td>Прочность (24 ч)</td><td>≥ 12 МПа</td></tr>
+              <tr><td>Прочность (28 сут)</td><td>65-75 МПа</td></tr>
+              <tr><td>Водонепроницаемость</td><td>W14-W16</td></tr>
+              <tr><td>Температурный диапазон</td><td>+5...+120°C</td></tr>
+              <tr><td>Время схватывания</td><td>~60 минут</td></tr>
+              <tr><td>Плотность суспензии</td><td>1,6-1,95 г/см³</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="s6-right">
+          <div class="s6-right-title">Получить расчёт</div>
+          <div style="font-size:17px; margin-bottom:12px;">Бесплатный расчёт:</div>
+          <ul class="s6-right-list" style="list-style-type: '• '; padding-left:14px;">
+            <li>Объём материала</li>
+            <li>Срок окупаемости</li>
+            <li>Прогноз дебита</li>
+          </ul>
+          <div style="font-size:17px;">Ответ в течение 24 часов</div>
+          
+          <div class="s6-right-sep"></div>
+          
+          <div class="s6-contact-name">ТОО «ЭкоМикс»</div>
+          <div class="s6-contact-info">
+            📧 info@nanocem.example<br>
+            📞 +7 (XXX) XXX-XX-XX<br><br>
+            Казахстан
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ─── JAVASCRIPT: Auto Scale & Chart ─── -->
+<script>
+  // Scale slides to fit viewport perfectly
+  function resizeSlides() {
+    const slides = document.querySelectorAll('.slide');
+    const winW = window.innerWidth;
+    const winH = window.innerHeight;
+    
+    // We want to fit 1920x1080 into winW x winH
+    const scale = Math.min(winW / 1920, winH / 1080);
+    
+    // Check if we are printing
+    const isPrint = window.matchMedia('print').matches;
+    
+    slides.forEach(slide => {
+      if (!isPrint && scale < 1) {
+        slide.style.transform = `scale(${scale})`;
+      } else {
+        slide.style.transform = `scale(1)`;
+      }
+    });
+  }
+  
+  window.addEventListener('resize', resizeSlides);
+  window.addEventListener('DOMContentLoaded', resizeSlides);
+  // Re-run safely after fonts load
+  window.addEventListener('load', resizeSlides);
+  
+  // Chart initialization
+  window.addEventListener('DOMContentLoaded', () => {
+    const ctx = document.getElementById('slidesChart');
+    if(ctx && window.Chart) {
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['До РИР', 'День 3', 'День 7', 'День 14', 'День 30'],
+          datasets: [{
+            label: 'Дебит нефти (т/сут)',
+            data: [1.1, 7.5, 14.1, 16.0, 16.2],
+            borderColor: '#000000',
+            backgroundColor: '#000000',
+            borderWidth: 3,
+            pointRadius: 6,
+            pointBackgroundColor: '#000000',
+            tension: 0.1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: 'rgba(0,0,0,0.8)',
+              titleFont: { family: 'Inter', size: 14 },
+              bodyFont: { family: 'Inter', size: 16, weight: 'bold' },
+              padding: 12
+            }
+          },
+          scales: {
+            y: {
+              min: 0,
+              max: 20,
+              grid: { color: '#E5E5E5', drawBorder: false },
+              ticks: { font: { family: 'Inter', size: 13 }, color: '#000' }
+            },
+            x: {
+              grid: { display: false, drawBorder: false },
+              ticks: { font: { family: 'Inter', size: 13 }, color: '#000' }
+            }
+          }
+        }
+      });
+    }
+  });
+</script>
+
+</body>
+</html>
