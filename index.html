@@ -27,9 +27,9 @@
       <li><a href="#application" class="nav-link">Применение</a></li>
       <li><a href="#results" class="nav-link">Результаты</a></li>
       <li><a href="#comparison" class="nav-link">Сравнение</a></li>
-      <li><a href="#calculator" class="nav-link">Калькулятор</a></li>
+      <li><a href="#" class="nav-link" id="navCalcLink">Калькулятор</a></li>
     </ul>
-    <a href="#calculator" class="btn-nav">Получить расчёт</a>
+    <a href="#" class="btn-nav" id="btnOpenCalc">Получить расчёт</a>
     <button class="nav-burger" id="navBurger" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
@@ -94,7 +94,7 @@
 <section class="section dispersity-section" id="dispersity">
   <div class="container">
     <div class="section-label">— Дисперсность</div>
-    <h2 class="section-title">Частицы, которые проникают<br>туда, куда другие не могут</h2>
+    <h2 class="section-title">Надёжная изоляция.<br><span style="color:var(--c-text-muted);font-weight:500">Энергия проникновения для самых сложных РИР</span></h2>
     <p class="section-desc">Уникальный помол обеспечивает размер частиц в 15–30 раз меньше стандартного портландцемента, что принципиально меняет инъекционные возможности.</p>
 
     <div class="dispersity-grid">
@@ -655,80 +655,7 @@
 </section>
 
 <!-- ═══════════════ CALCULATOR ═══════════════ -->
-<section class="section calculator-section" id="calculator">
-  <div class="container">
-    <div class="section-label">— Калькулятор</div>
-    <h2 class="section-title">Экономический расчёт</h2>
-    <p class="section-desc">Оцените потенциальный эффект от применения NanoCem UT-9 на вашем объекте.</p>
-
-    <div class="calc-layout">
-      <div class="calc-form-area">
-        <div class="calc-form">
-          <h3 class="calc-form-title">Параметры объекта</h3>
-
-          <div class="calc-field">
-            <label class="calc-label" for="wellCount">Количество скважин</label>
-            <input type="range" id="wellCount" min="1" max="50" value="5" class="calc-range" />
-            <div class="calc-range-val"><span id="wellCountVal">5</span> скважин</div>
-          </div>
-
-          <div class="calc-field">
-            <label class="calc-label" for="waterCut">Текущая обводнённость (%)</label>
-            <input type="range" id="waterCut" min="50" max="98" value="85" class="calc-range" />
-            <div class="calc-range-val"><span id="waterCutVal">85</span>%</div>
-          </div>
-
-          <div class="calc-field">
-            <label class="calc-label" for="oilPrice">Цена нефти ($/барр)</label>
-            <input type="range" id="oilPrice" min="40" max="120" value="70" class="calc-range" />
-            <div class="calc-range-val">$<span id="oilPriceVal">70</span></div>
-          </div>
-
-          <div class="calc-field">
-            <label class="calc-label" for="wellRate">Дебит скважины (т/сут)</label>
-            <input type="range" id="wellRate" min="5" max="200" value="30" class="calc-range" />
-            <div class="calc-range-val"><span id="wellRateVal">30</span> т/сут</div>
-          </div>
-
-          <button class="btn-primary btn-full" id="calcBtn">Рассчитать эффект</button>
-        </div>
-      </div>
-
-      <div class="calc-results-area">
-        <div class="calc-results" id="calcResults">
-          <div class="result-main">
-            <div class="result-icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-            </div>
-            <div class="result-label">Прогнозируемый доход (USD)</div>
-            <div class="result-value" id="resultRevenue">$ —</div>
-          </div>
-          <div class="result-grid">
-            <div class="result-item">
-              <div class="result-item-label">Доп. добыча нефти</div>
-              <div class="result-item-val" id="resultOil">— т</div>
-            </div>
-            <div class="result-item">
-              <div class="result-item-label">Снижение обводнённости</div>
-              <div class="result-item-val" id="resultWater">— %</div>
-            </div>
-            <div class="result-item">
-              <div class="result-item-label">Стоимость операции</div>
-              <div class="result-item-val" id="resultCost">$ —</div>
-            </div>
-            <div class="result-item">
-              <div class="result-item-label">ROI за 6 месяцев</div>
-              <div class="result-item-val result-roi" id="resultROI">— %</div>
-            </div>
-          </div>
-          <div class="result-chart-wrap">
-            <canvas id="roiChart" height="200"></canvas>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+<!-- calculator moved to floating panel below -->
 
 <!-- ═══════════════ CONTACT ═══════════════ -->
 <section class="section contact-section dark-section" id="contact">
@@ -823,5 +750,96 @@
 </footer>
 
 <script src="app.js"></script>
+
+<!-- ═══ FLOATING CALCULATOR BUTTON ═══ -->
+<button class="calc-fab" id="calcFab" aria-label="Калькулятор">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/>
+    <line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/>
+  </svg>
+  <span class="calc-fab-label">Расчёт</span>
+</button>
+<div class="calc-overlay" id="calcOverlay"></div>
+
+<!-- ═══ CALCULATOR SIDE DRAWER ═══ -->
+<aside class="calc-drawer" id="calcDrawer" aria-label="Калькулятор">
+  <div class="calc-drawer-header">
+    <div class="calc-drawer-title">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+      </svg>
+      Экономический расчёт
+    </div>
+    <button class="calc-drawer-close" id="calcDrawerClose" aria-label="Закрыть">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+  <div class="calc-drawer-body">
+    <p class="calc-drawer-desc">Оцените потенциальный эффект от NanoCem UT-9 на вашем объекте.</p>
+
+    <!-- Form -->
+    <div class="calc-form" style="background:transparent;padding:0;border:none;box-shadow:none;">
+      <h3 class="calc-form-title">Параметры объекта</h3>
+      <div class="calc-field">
+        <label class="calc-label" for="wellCount">Количество скважин</label>
+        <input type="range" id="wellCount" min="1" max="50" value="5" class="calc-range" />
+        <div class="calc-range-val"><span id="wellCountVal">5</span> скважин</div>
+      </div>
+      <div class="calc-field">
+        <label class="calc-label" for="waterCut">Текущая обводнённость (%)</label>
+        <input type="range" id="waterCut" min="50" max="98" value="85" class="calc-range" />
+        <div class="calc-range-val"><span id="waterCutVal">85</span>%</div>
+      </div>
+      <div class="calc-field">
+        <label class="calc-label" for="oilPrice">Цена нефти ($/барр)</label>
+        <input type="range" id="oilPrice" min="40" max="120" value="70" class="calc-range" />
+        <div class="calc-range-val">$<span id="oilPriceVal">70</span></div>
+      </div>
+      <div class="calc-field">
+        <label class="calc-label" for="wellRate">Дебит скважины (т/сут)</label>
+        <input type="range" id="wellRate" min="5" max="200" value="30" class="calc-range" />
+        <div class="calc-range-val"><span id="wellRateVal">30</span> т/сут</div>
+      </div>
+      <button class="btn-primary btn-full" id="calcBtn">Рассчитать эффект</button>
+    </div>
+
+    <!-- Results -->
+    <div class="calc-results" id="calcResults" style="margin-top:16px;padding:16px;border-radius:12px;">
+      <div class="result-main">
+        <div class="result-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+        </div>
+        <div class="result-label">Прогнозируемый доход (USD)</div>
+        <div class="result-value" id="resultRevenue">$ —</div>
+      </div>
+      <div class="result-grid">
+        <div class="result-item">
+          <div class="result-item-label">Доп. добыча нефти</div>
+          <div class="result-item-val" id="resultOil">— т</div>
+        </div>
+        <div class="result-item">
+          <div class="result-item-label">Снижение обводнённости</div>
+          <div class="result-item-val" id="resultWater">— %</div>
+        </div>
+        <div class="result-item">
+          <div class="result-item-label">Стоимость операции</div>
+          <div class="result-item-val" id="resultCost">$ —</div>
+        </div>
+        <div class="result-item">
+          <div class="result-item-label">ROI за 6 месяцев</div>
+          <div class="result-item-val result-roi" id="resultROI">— %</div>
+        </div>
+      </div>
+      <div class="result-chart-wrap">
+        <canvas id="roiChart" height="160"></canvas>
+      </div>
+    </div>
+  </div>
+</aside>
+
 </body>
 </html>

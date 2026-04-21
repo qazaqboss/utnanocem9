@@ -1219,3 +1219,31 @@ document.head.appendChild(fadeStyle);
 
   obs.observe(section);
 })();
+
+/* ═══ CALCULATOR DRAWER ═══ */
+(function initCalcDrawer() {
+  const fab      = document.getElementById('calcFab');
+  const drawer   = document.getElementById('calcDrawer');
+  const overlay  = document.getElementById('calcOverlay');
+  const closeBtn = document.getElementById('calcDrawerClose');
+  const navLink  = document.getElementById('navCalcLink');
+  const btnOpen  = document.getElementById('btnOpenCalc');
+
+  function open() {
+    drawer.classList.add('open');
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function close() {
+    drawer.classList.remove('open');
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  [fab, navLink, btnOpen].forEach(el => {
+    if (el) el.addEventListener('click', e => { e.preventDefault(); open(); });
+  });
+  if (closeBtn) closeBtn.addEventListener('click', close);
+  if (overlay)  overlay.addEventListener('click', close);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+})();
