@@ -251,8 +251,8 @@ function animateCounter(el) {
   }
 
   function drawRock() {
-    /* Dark background */
-    ctx.fillStyle = '#0D0D0D';
+    /* Dark crack background */
+    ctx.fillStyle = '#0f172a'; // dark crack
     ctx.fillRect(0, 0, W, H);
 
     /* Rock texture — left side */
@@ -275,11 +275,11 @@ function animateCounter(el) {
     rightPath.lineTo(W, H);
     rightPath.closePath();
 
-    /* Rock fill with subtle texture */
+    /* Rock fill with light texture */
     const grad = ctx.createLinearGradient(0, 0, W, 0);
-    grad.addColorStop(0, '#1a1a1a');
-    grad.addColorStop(0.5, '#252525');
-    grad.addColorStop(1, '#1a1a1a');
+    grad.addColorStop(0, '#f9fafb');
+    grad.addColorStop(0.5, '#e5e7eb');
+    grad.addColorStop(1, '#f9fafb');
     ctx.fillStyle = grad;
     ctx.fill(leftPath);
     ctx.fill(rightPath);
@@ -330,8 +330,8 @@ function animateCounter(el) {
     for (const p of particles) {
       /* Glow */
       const glow = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 4);
-      glow.addColorStop(0, `rgba(255,255,255,${p.opacity * 0.3})`);
-      glow.addColorStop(1, 'rgba(255,255,255,0)');
+      glow.addColorStop(0, `rgba(234,88,12,${p.opacity * 0.4})`); // Orange glow
+      glow.addColorStop(1, 'rgba(234,88,12,0)');
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.r * 4, 0, Math.PI * 2);
       ctx.fillStyle = glow;
@@ -991,7 +991,7 @@ function makeSparkline(id, data, color) {
   if (!form) return;
   form.addEventListener("submit", (e) => {
     e.preventDefault();
-    const btn = form.querySelector("button[type="submit"]");
+    const btn = form.querySelector('button[type="submit"]');
     btn.textContent = "Отправляем...";
     btn.disabled = true;
     setTimeout(() => {
