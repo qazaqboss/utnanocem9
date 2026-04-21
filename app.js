@@ -128,7 +128,7 @@ Chart.defaults.color = '#6B6B6B';
   appCards.forEach(c => cardObserver.observe(c));
 
   /* KPI counter animation */
-  const kpiNumbers = document.querySelectorAll('.kpi-number');
+  const kpiNumbers = document.querySelectorAll('.kpi-number, .kpi2-num');
   const kpiObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -973,320 +973,58 @@ function makeSparkline(id, data, color) {
   });
 })();
 
-/* ═══ 12. CALCULATOR (правильная формула) ═══ */
-(function initCalculator() {
-  const $ = id => document.getElementById(id);
-
-  const elWellCount    = $('wellCount');
-  const elWaterCut     = $('waterCut');
-  const elOilPrice     = $('oilPrice');
-  const elWellRate     = $('wellRate');
-  const elWellCountVal = $('wellCountVal');
-  const elWaterCutVal  = $('waterCutVal');
-  const elOilPriceVal  = $('oilPriceVal');
-  const elWellRateVal  = $('wellRateVal');
-  const elCalcBtn      = $('calcBtn');
-
-  if (!elWellCount || !elCalcBtn) return;
-
-  /* Live slider labels + auto-recalc */
-  elWellCount.addEventListener('input', () => { elWellCountVal.textContent = elWellCount.value; calculate(); });
-  elWaterCut .addEventListener('input', () => { elWaterCutVal .textContent = elWaterCut.value;  calculate(); });
-  elOilPrice .addEventListener('input', () => { elOilPriceVal .textContent = elOilPrice.value;  calculate(); });
-  elWellRate .addEventListener('input', () => { elWellRateVal .textContent = elWellRate.value;  calculate(); });
-
-  let roiChartInstance = null;
-
-  elCalcBtn.addEventListener('click', calculate);
-
-  function calculate() {
-    /*
-     * ВХОДНЫЕ ДАННЫЕ
-     * ─────────────
-     * wells     — количество скважин
-     * W0        — начальная обводнённость, % (напр. 85)
-     * oilPrice  — цена нефти, $/барр (напр. 70)
-     * Q_liq0    — текущий дебит жидкости скважины, т/сут
-     *
-     * КАЛИБРОВКА ПО КЕЙСУ СКВАЖИНЫ 343:
-     * До РИР:   Q_liq=7,8 т/сут, W=86%  → Q_oil=1,1 т/сут
-     * После РИР: Q_liq=21,6 т/сут, W=26% → Q_oil=16,0 т/сут
-     *
-     * Эмпирическая модель:
-     *   liquidMultiplier = 1 + (W0/100) × 2.05
-     *     → при W=86%: 1 + 0.86×2.05 = 2.763 ⇒ Q_liq_after = 7.8×2.763 = 21.55 ≈ 21.6 ✓
-     *   newWaterCut = W0 × 0.30  (мин. 15%)
-     *     → при W=86%: 86×0.30 = 25.8% ≈ 26% ✓
-     */
-    const wells    = parseInt(elWellCount.value) || 5;
-    const W0       = parseInt(elWaterCut.value)  || 85;   /* % */
-    const oilPrice = parseInt(elOilPrice.value)  || 70;   /* $/barrel */
-    const Q_liq0   = parseInt(elWellRate.value)  || 30;   /* т/сут (total liquid) */
-
-    /* ── Состояние ДО РИР ── */
-    const Q_oil0 = Q_liq0 * (1 - W0 / 100);                  /* т/сут нефти */
-
-    /* ── Прогноз ПОСЛЕ РИР ── */
-    const liquidMult = 1 + (W0 / 100) * 2.05;                /* множитель дебита жидкости */
-    const W1_raw     = W0 * 0.30;                             /* новая обводнённость ~ 30% от начальной */
-    const W1         = Math.max(W1_raw, 15);                  /* не ниже 15% */
-    const Q_liq1     = Q_liq0 * liquidMult;                   /* т/сут жидкости после */
-    const Q_oil1     = Q_liq1 * (1 - W1 / 100);              /* т/сут нефти после */
-
-    /* ── Прирост нефти ── */
-    const deltaOilPerWell = Math.max(Q_oil1 - Q_oil0, 0);    /* т/сут доп. нефти с 1 скважины */
-    const dW              = W0 - W1;                          /* снижение обводнённости, п.п. */
-
-    /* ── За 6 месяцев (180 сут) ── */
-    const days          = 180;
-    const totalExtraOil = deltaOilPerWell * wells * days;     /* тонн за период */
-
-    /* ── Экономика ── */
-    const TON_PER_BARREL   = 0.136;                           /* конверсия: 1 т = 1/0.136 барр */
-    const oilPricePerTon   = oilPrice / TON_PER_BARREL;      /* $/тонна */
-    const revenueUSD       = totalExtraOil * oilPricePerTon;  /* доп. выручка за 6 мес, $ */
-    const costPerWellUSD   = 18_000;                          /* стоимость 1 операции РИР, $ */
-    const totalCostUSD     = costPerWellUSD * wells;          /* общие затраты, $ */
-    const netProfitUSD     = revenueUSD - totalCostUSD;       /* чистая прибыль, $ */
-    const roi              = netProfitUSD / totalCostUSD * 100;  /* ROI, % */
-    const paybackDays      = totalCostUSD / (deltaOilPerWell * wells * oilPricePerTon / days); /* сут */
-
-    /* ── Обновление DOM ── */
-    const set = (id, v) => { const el = $(id); if (el) el.textContent = v; };
-
-    set('resultRevenue', '$ ' + fmt(Math.round(revenueUSD)));
-    set('resultOil',     '+' + Math.round(totalExtraOil).toLocaleString('ru') + ' т');
-    set('resultWater',   '−' + Math.round(dW) + ' п.п.');
-    set('resultCost',    '$ ' + fmt(Math.round(totalCostUSD)));
-    set('resultROI',     Math.round(roi) + '%');
-
-    /* ── ROI-диаграмма (кумулятивная выручка vs затраты) ── */
-    const roiCtx = $('roiChart');
-    if (!roiCtx) return;
-
-    if (roiChartInstance) { roiChartInstance.destroy(); roiChartInstance = null; }
-
-    const labels       = ['Мес 1', 'Мес 2', 'Мес 3', 'Мес 4', 'Мес 5', 'Мес 6'];
-    const cumulRevenue = labels.map((_, i) =>
-      Math.round((totalExtraOil / 6) * (i + 1) * oilPricePerTon)
-    );
-    const costLine = labels.map(() => Math.round(totalCostUSD));
-
-    roiChartInstance = new Chart(roiCtx, {
-      type: 'bar',
-      data: {
-        labels,
-        datasets: [
-          {
-            label: 'Доп. выручка нарастающим итогом ($)',
-            data: cumulRevenue,
-            backgroundColor: 'rgba(13,13,13,0.12)',
-            borderColor: 'rgba(13,13,13,0.8)',
-            borderWidth: 2,
-            borderRadius: 6,
-            borderSkipped: false,
-          },
-          {
-            label: 'Затраты на РИР ($)',
-            data: costLine,
-            type: 'line',
-            borderColor: '#EA580C',
-            borderWidth: 2,
-            borderDash: [5, 4],
-            pointRadius: 0,
-            fill: false,
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        animation: { duration: 500 },
-        interaction: { mode: 'index', intersect: false },
-        plugins: {
-          legend: {
-            position: 'bottom',
-            labels: { boxWidth: 16, boxHeight: 2, padding: 12, font: { size: 11, family: 'Inter' } }
-          },
-          tooltip: {
-            callbacks: {
-              label: c => ` ${c.dataset.label}: $${fmt(Math.round(c.raw))}`
-            }
-          }
-        },
-        scales: {
-          x: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { size: 11 } } },
-          y: {
-            grid: { color: 'rgba(0,0,0,0.04)' },
-            ticks: { font: { size: 10 }, callback: v => '$' + fmt(v) }
-          }
-        }
-      }
-    });
-
-    /* animate panel */
-    const panel = $('calcResults');
-    if (panel) {
-      panel.style.animation = 'none';
-      panel.offsetHeight;
-      panel.style.animation = 'fadeInUp 0.4s ease';
-    }
-  }
-
-  /* Запуск при открытии drawer */
-  const drawer = $('calcDrawer');
-  if (drawer) {
-    const mo = new MutationObserver(() => {
-      if (drawer.classList.contains('open')) { calculate(); mo.disconnect(); }
-    });
-    mo.observe(drawer, { attributes: true, attributeFilter: ['class'] });
-  }
-  calculate();
-
-  function fmt(n) {
-    if (n >= 1_000_000) return (n / 1_000_000).toFixed(2) + 'M';
-    if (n >= 1_000)     return (n / 1_000).toFixed(1) + 'K';
-    return String(n);
-  }
-})();
-
+/* ═══ End of app.js ═══ */
 
 /* ═══ 13. CONTACT FORM ═══ */
 (function initContactForm() {
-  const form = document.getElementById('contactForm');
+  const form = document.getElementById("contactForm");
   if (!form) return;
-
-  form.addEventListener('submit', (e) => {
+  form.addEventListener("submit", (e) => {
     e.preventDefault();
-    const btn = form.querySelector('button[type="submit"]');
-    btn.textContent = 'Отправляем...';
+    const btn = form.querySelector("button[type="submit"]");
+    btn.textContent = "Отправляем...";
     btn.disabled = true;
-
     setTimeout(() => {
-      document.getElementById('formSuccess').classList.add('show');
-      btn.style.display = 'none';
-      form.querySelectorAll('input, textarea').forEach(el => el.value = '');
+      const suc = document.getElementById("formSuccess");
+      if (suc) { suc.style.display = "block"; }
+      btn.style.display = "none";
+      form.querySelectorAll("input, textarea").forEach(el => el.value = "");
     }, 1200);
   });
 })();
 
-/* ═══ 14. FADE-IN ANIMATION ═══ */
-const fadeStyle = document.createElement('style');
-fadeStyle.textContent = `
-  @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  .kpi-label {
-    font-size: 0.8125rem;
-    color: var(--c-text-muted);
-    margin-top: 6px;
-    font-weight: 500;
-    line-height: 1.4;
-  }
-  .kpi-sublabel {
-    font-size: 0.6875rem;
-    color: var(--c-text-muted);
-    opacity: 0.7;
-    margin-top: 4px;
-    line-height: 1.4;
-  }
-  .kpi-sparkline { height: 48px; margin-top: 16px; }
-  .kpi-blue .kpi-number { color: var(--c-accent); }
-  .kpi-green .kpi-number { color: var(--c-accent-3); }
-  .kpi-purple .kpi-number { color: var(--c-accent-2); }
-  .kpi-orange .kpi-number { color: var(--c-accent-4); }
-
-  /* KPI card staggered entrance */
-  @keyframes kpiSlideIn {
-    from { opacity: 0; transform: translateY(24px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  .kpi-card {
-    animation: kpiSlideIn 0.55s cubic-bezier(0.4,0,0.2,1) both;
-  }
-  .nav-link.active {
-    color: var(--c-text) !important;
-    background: rgba(0,0,0,0.06) !important;
-  }
-`;
-document.head.appendChild(fadeStyle);
-
-/* ═══ 15. SMOOTH ENTRANCE for sections ═══ */
+/* ═══ 14. SECTION FADE ═══ */
 (function initSectionFade() {
-  const style = document.createElement('style');
-  style.textContent = `
-    .section-fade { opacity: 0; transform: translateY(32px); transition: opacity 0.7s ease, transform 0.7s ease; }
-    .section-fade.in { opacity: 1; transform: translateY(0); }
-  `;
+  const style = document.createElement("style");
+  style.textContent = ".section-fade{opacity:0;transform:translateY(28px);transition:opacity .65s ease,transform .65s ease} .section-fade.in{opacity:1;transform:translateY(0)} .nav-link.active{color:var(--c-text)!important;background:rgba(0,0,0,.06)!important}";
   document.head.appendChild(style);
-
-  document.querySelectorAll('.section-title, .section-desc, .chart-card, .kpi-card, .metric-card, .step-item, .case-heading')
+  document.querySelectorAll(".sec-title,.sec-sub,.chart-card,.kpi2-card,.task-card,.why-metric,.econ-card,.case2-col,.ba-panel,.h2m-card")
     .forEach(el => {
-      el.classList.add('section-fade');
+      el.classList.add("section-fade");
       const obs = new IntersectionObserver(([entry]) => {
-        if (entry.isIntersecting) {
-          el.classList.add('in');
-          obs.unobserve(el);
-        }
-      }, { threshold: 0.1 });
+        if (entry.isIntersecting) { el.classList.add("in"); obs.unobserve(el); }
+      }, { threshold: 0.08 });
       obs.observe(el);
     });
 })();
 
-/* ═══ RIR TIMELINE ANIMATION ═══ */
+/* ═══ 15. RIR TIMELINE ═══ */
 (function initRirTimeline() {
-  const section = document.getElementById('rir-process');
+  const section = document.getElementById("rir-process");
   if (!section) return;
-
-  const steps  = section.querySelectorAll('.rir-step');
-  const fill   = document.getElementById('rirTrackFill');
+  const steps = section.querySelectorAll(".rir-step");
+  const fill  = document.getElementById("rirTrackFill");
   let triggered = false;
-
   const obs = new IntersectionObserver(([e]) => {
     if (e.isIntersecting && !triggered) {
       triggered = true;
-
-      /* Animate track fill */
-      if (fill) fill.classList.add('animated');
-
-      /* Stagger step reveal */
-      steps.forEach((step, i) => {
+      if (fill) fill.classList.add("animated");
+      steps.forEach(step => {
         const delay = parseInt(step.dataset.delay || 0);
-        setTimeout(() => step.classList.add('visible'), delay + 200);
+        setTimeout(() => step.classList.add("visible"), delay + 200);
       });
-
       obs.disconnect();
     }
   }, { threshold: 0.2 });
-
   obs.observe(section);
-})();
-
-/* ═══ CALCULATOR DRAWER ═══ */
-(function initCalcDrawer() {
-  const fab      = document.getElementById('calcFab');
-  const drawer   = document.getElementById('calcDrawer');
-  const overlay  = document.getElementById('calcOverlay');
-  const closeBtn = document.getElementById('calcDrawerClose');
-  const navLink  = document.getElementById('navCalcLink');
-  const btnOpen  = document.getElementById('btnOpenCalc');
-
-  function open() {
-    drawer.classList.add('open');
-    overlay.classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
-  function close() {
-    drawer.classList.remove('open');
-    overlay.classList.remove('open');
-    document.body.style.overflow = '';
-  }
-
-  [fab, navLink, btnOpen].forEach(el => {
-    if (el) el.addEventListener('click', e => { e.preventDefault(); open(); });
-  });
-  if (closeBtn) closeBtn.addEventListener('click', close);
-  if (overlay)  overlay.addEventListener('click', close);
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
 })();
