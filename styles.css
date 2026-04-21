@@ -893,7 +893,8 @@ html, body { overflow-x: hidden; max-width: 100%; }
   letter-spacing: 0.1em;
   color: var(--c-text-muted);
 }
-.pen-canvas-wrap {
+/* Image wrap replacing canvas */
+.pen-img-wrap {
   position: relative;
   flex: 1;
   min-height: 260px;
@@ -901,28 +902,25 @@ html, body { overflow-x: hidden; max-width: 100%; }
   overflow: hidden;
   background: #1a1a1a;
 }
-.pen-canvas-wrap canvas {
-  width: 100% !important;
-  height: 100% !important;
+.pen-scheme-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
   display: block;
+  border-radius: var(--radius-md);
 }
-/* Annotation labels */
-.pen-label {
+.pen-img-caption {
   position: absolute;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.75rem;
-  color: rgba(255,255,255,0.55);
-  line-height: 1.4;
+  bottom: 0;
+  left: 0; right: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 100%);
+  color: rgba(255,255,255,0.7);
+  font-size: 0.6875rem;
+  padding: 24px 14px 10px;
   pointer-events: none;
+  letter-spacing: 0.02em;
 }
-.pen-label b { color: rgba(255,255,255,0.85); font-weight: 600; }
-.pen-label-top { top: 10px; left: 12px; flex-direction: column; align-items: flex-start; gap: 2px; }
-.pen-label-mid { top: 50%; right: 12px; transform: translateY(-50%); flex-direction: row-reverse; text-align: right; }
-.pen-label-bot { bottom: 14px; right: 12px; flex-direction: row-reverse; text-align: right; }
-.pen-arrow { font-size: 1rem; color: rgba(255,255,255,0.35); flex-shrink: 0; }
-.pen-al { font-size: 0.875rem; }
 /* Legend */
 .pen-legend {
   background: #F5F5F5;
@@ -948,11 +946,11 @@ html, body { overflow-x: hidden; max-width: 100%; }
 }
 @media (max-width: 768px) {
   .penetration-panel { gap: 10px; }
-  .pen-canvas-wrap { min-height: 200px; }
-  .pen-label { font-size: 0.6875rem; }
+  .pen-img-wrap { min-height: 200px; }
   .pen-legend { padding: 8px 12px; }
   .pen-legend-item { font-size: 0.6875rem; }
 }
+
 
 .case-heading {
   font-size: 1.5rem;
