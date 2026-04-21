@@ -975,88 +975,96 @@ function makeSparkline(id, data, color) {
 
 /* ═══ 12. CALCULATOR (USD) ═══ */
 (function initCalculator() {
-  const inputs = {
-    wellCount: { el: document.getElementById('wellCount'), val: document.getElementById('wellCountVal') },
-    waterCut:  { el: document.getElementById('waterCut'),  val: document.getElementById('waterCutVal') },
-    oilPrice:  { el: document.getElementById('oilPrice'),  val: document.getElementById('oilPriceVal') },
-    wellRate:  { el: document.getElementById('wellRate'),  val: document.getElementById('wellRateVal') },
-  };
+  /* Safe element getter */
+  const $ = id => document.getElementById(id);
 
-  /* Live range display */
-  Object.values(inputs).forEach(({ el, val }) => {
-    el.addEventListener('input', () => { val.textContent = el.value; });
-  });
+  const elWellCount    = $('wellCount');
+  const elWaterCut     = $('waterCut');
+  const elOilPrice     = $('oilPrice');
+  const elWellRate     = $('wellRate');
+  const elWellCountVal = $('wellCountVal');
+  const elWaterCutVal  = $('waterCutVal');
+  const elOilPriceVal  = $('oilPriceVal');
+  const elWellRateVal  = $('wellRateVal');
+  const elCalcBtn      = $('calcBtn');
+
+  /* Abort if drawer elements not found */
+  if (!elWellCount || !elCalcBtn) return;
+
+  /* Live slider labels */
+  elWellCount.addEventListener('input', () => { elWellCountVal.textContent = elWellCount.value; calculate(); });
+  elWaterCut .addEventListener('input', () => { elWaterCutVal .textContent = elWaterCut.value;  calculate(); });
+  elOilPrice .addEventListener('input', () => { elOilPriceVal .textContent = elOilPrice.value;  calculate(); });
+  elWellRate .addEventListener('input', () => { elWellRateVal .textContent = elWellRate.value;  calculate(); });
 
   let roiChartInstance = null;
 
-  document.getElementById('calcBtn').addEventListener('click', calculate);
+  elCalcBtn.addEventListener('click', calculate);
 
   function calculate() {
-    const wells      = parseInt(inputs.wellCount.el.value);
-    const waterCut   = parseInt(inputs.waterCut.el.value);
-    const oilPrice   = parseInt(inputs.oilPrice.el.value); // USD/barrel
-    const wellRate   = parseInt(inputs.wellRate.el.value); // t/day
+    const wells     = parseInt(elWellCount.value) || 5;
+    const waterCut  = parseInt(elWaterCut.value)  || 85;
+    const oilPrice  = parseInt(elOilPrice.value)  || 70;  /* USD/barrel */
+    const wellRate  = parseInt(elWellRate.value)   || 30;  /* t/day */
 
-    /* Model assumptions */
-    const successRate    = 0.92;                         // 92% success rate
-    const waterReduction = 0.62;                         // 62% water cut reduction
-    const ratioIncrease  = 1 + (waterCut / 100) * 1.8;  // oil rate multiplier
-    const operationDays  = 180;                          // 6 months
-    const costPerWellUSD = 17_000;                       // ~$17K per well operation
-    const tonPerBarrel   = 0.136;                        // tons → barrels conversion
-    const oilPricePerTon = oilPrice / tonPerBarrel;      // $/ton
+    /* ── Model ── */
+    const successRate      = 0.92;
+    const waterReduction   = 0.62;                         /* 62% water cut reduction */
+    const rateMultiplier   = 1 + (waterCut / 100) * 1.8;  /* oil rate multiplier */
+    const operationDays    = 180;                          /* 6 months */
+    const costPerWellUSD   = 17_000;
+    const tonPerBarrel     = 0.136;
+    const oilPricePerTon  = oilPrice / tonPerBarrel;
 
-    const additionalRatePerWell = wellRate * (ratioIncrease - 1) * successRate; // extra t/day
-    const totalAdditionalOil    = additionalRatePerWell * wells * operationDays; // total extra tons
-    const revenueUSD            = totalAdditionalOil * oilPricePerTon;           // $
-    const costUSD               = costPerWellUSD * wells;                        // $
-    const roi                   = ((revenueUSD - costUSD) / costUSD * 100);
-    const newWaterCut           = waterCut * (1 - waterReduction);
+    const extraRatePerWell  = wellRate * (rateMultiplier - 1) * successRate;
+    const totalExtraOil     = extraRatePerWell * wells * operationDays;
+    const revenueUSD        = totalExtraOil * oilPricePerTon;
+    const costUSD           = costPerWellUSD * wells;
+    const roi               = ((revenueUSD - costUSD) / costUSD) * 100;
+    const newWaterCut       = waterCut * (1 - waterReduction);
 
-    /* Update DOM */
-    document.getElementById('resultRevenue').textContent =
-      '$ ' + formatUSD(Math.round(revenueUSD));
-    document.getElementById('resultOil').textContent =
-      '+' + Math.round(totalAdditionalOil).toLocaleString('ru') + ' т';
-    document.getElementById('resultWater').textContent =
-      '-' + Math.round(waterCut - newWaterCut) + '%';
-    document.getElementById('resultCost').textContent =
-      '$ ' + formatUSD(costUSD);
-    document.getElementById('resultROI').textContent =
-      Math.round(roi) + '%';
+    /* ── Update result elements (null-safe) ── */
+    const set = (id, v) => { const el = $(id); if (el) el.textContent = v; };
 
-    /* ROI bar chart */
-    const roiCtx = document.getElementById('roiChart');
-    if (roiChartInstance) roiChartInstance.destroy();
+    set('resultRevenue', '$ ' + fmt(Math.round(revenueUSD)));
+    set('resultOil',     '+' + Math.round(totalExtraOil).toLocaleString('ru') + ' т');
+    set('resultWater',   '−' + Math.round(waterCut - newWaterCut) + ' п.п.');
+    set('resultCost',    '$ ' + fmt(Math.round(costUSD)));
+    set('resultROI',     Math.round(roi) + '%');
 
-    const months = ['Mo1', 'Mo2', 'Mo3', 'Mo4', 'Mo5', 'Mo6'];
-    const revenues = months.map((_, i) =>
-      Math.round((totalAdditionalOil / 6) * (i + 1) * oilPricePerTon)
+    /* ── ROI Chart ── */
+    const roiCtx = $('roiChart');
+    if (!roiCtx) return;
+
+    if (roiChartInstance) { roiChartInstance.destroy(); roiChartInstance = null; }
+
+    const labels   = ['Мес 1', 'Мес 2', 'Мес 3', 'Мес 4', 'Мес 5', 'Мес 6'];
+    const revenues = labels.map((_, i) =>
+      Math.round((totalExtraOil / 6) * (i + 1) * oilPricePerTon)
     );
-    const costs = months.map(() => costUSD);
+    const costs = labels.map(() => Math.round(costUSD));
 
     roiChartInstance = new Chart(roiCtx, {
       type: 'bar',
       data: {
-        labels: months,
+        labels,
         datasets: [
           {
-            label: 'Additional revenue',
+            label: 'Доп. выручка ($)',
             data: revenues,
-            backgroundColor: 'rgba(5,150,105,0.15)',
-            borderColor: 'rgb(5,150,105)',
+            backgroundColor: 'rgba(13,13,13,0.12)',
+            borderColor: 'rgba(13,13,13,0.75)',
             borderWidth: 2,
             borderRadius: 6,
             borderSkipped: false,
-            type: 'bar',
           },
           {
-            label: 'Operation cost',
+            label: 'Затраты ($)',
             data: costs,
             type: 'line',
             borderColor: '#EA580C',
             borderWidth: 2,
-            borderDash: [6, 4],
+            borderDash: [5, 4],
             pointRadius: 0,
             fill: false,
           }
@@ -1065,48 +1073,58 @@ function makeSparkline(id, data, color) {
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        animation: { duration: 500 },
         interaction: { mode: 'index', intersect: false },
         plugins: {
           legend: {
             position: 'bottom',
-            labels: { boxWidth: 16, boxHeight: 2, padding: 12, font: { size: 11 } }
+            labels: { boxWidth: 16, boxHeight: 2, padding: 12, font: { size: 11, family: 'Inter' } }
           },
           tooltip: {
             callbacks: {
-              label: ctx => ` ${ctx.dataset.label}: $${formatUSD(Math.round(ctx.raw))}`
+              label: c => ` ${c.dataset.label}: $${fmt(Math.round(c.raw))}`
             }
           }
         },
         scales: {
-          x: {
-            grid: { color: 'rgba(0,0,0,0.04)' },
-            ticks: { font: { size: 11 } }
-          },
+          x: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { size: 11 } } },
           y: {
             grid: { color: 'rgba(0,0,0,0.04)' },
-            ticks: { font: { size: 10 }, callback: v => '$' + formatUSD(v) },
+            ticks: { font: { size: 10 }, callback: v => '$' + fmt(v) }
           }
         }
       }
     });
 
     /* Animate result panel */
-    const panel = document.getElementById('calcResults');
-    panel.style.animation = 'none';
-    panel.offsetHeight;
-    panel.style.animation = 'fadeInUp 0.4s ease';
+    const panel = $('calcResults');
+    if (panel) {
+      panel.style.animation = 'none';
+      panel.offsetHeight; // reflow
+      panel.style.animation = 'fadeInUp 0.4s ease';
+    }
   }
 
-  /* Run on load with defaults */
+  /* Run on open (first visible render) */
+  const drawer = $('calcDrawer');
+  if (drawer) {
+    const drawerObs = new MutationObserver(() => {
+      if (drawer.classList.contains('open')) {
+        calculate();
+        drawerObs.disconnect();
+      }
+    });
+    drawerObs.observe(drawer, { attributes: true, attributeFilter: ['class'] });
+  }
+  /* Also run immediately in case already visible */
   calculate();
 
-  function formatUSD(n) {
+  function fmt(n) {
     if (n >= 1_000_000) return (n / 1_000_000).toFixed(2) + 'M';
     if (n >= 1_000)     return (n / 1_000).toFixed(1) + 'K';
-    return n.toFixed(0);
+    return String(n);
   }
 })();
-
 
 /* ═══ 13. CONTACT FORM ═══ */
 (function initContactForm() {
