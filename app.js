@@ -973,9 +973,8 @@ function makeSparkline(id, data, color) {
   });
 })();
 
-/* ═══ 12. CALCULATOR (USD) ═══ */
+/* ═══ 12. CALCULATOR (правильная формула) ═══ */
 (function initCalculator() {
-  /* Safe element getter */
   const $ = id => document.getElementById(id);
 
   const elWellCount    = $('wellCount');
@@ -988,10 +987,9 @@ function makeSparkline(id, data, color) {
   const elWellRateVal  = $('wellRateVal');
   const elCalcBtn      = $('calcBtn');
 
-  /* Abort if drawer elements not found */
   if (!elWellCount || !elCalcBtn) return;
 
-  /* Live slider labels */
+  /* Live slider labels + auto-recalc */
   elWellCount.addEventListener('input', () => { elWellCountVal.textContent = elWellCount.value; calculate(); });
   elWaterCut .addEventListener('input', () => { elWaterCutVal .textContent = elWaterCut.value;  calculate(); });
   elOilPrice .addEventListener('input', () => { elOilPriceVal .textContent = elOilPrice.value;  calculate(); });
@@ -1002,47 +1000,77 @@ function makeSparkline(id, data, color) {
   elCalcBtn.addEventListener('click', calculate);
 
   function calculate() {
-    const wells     = parseInt(elWellCount.value) || 5;
-    const waterCut  = parseInt(elWaterCut.value)  || 85;
-    const oilPrice  = parseInt(elOilPrice.value)  || 70;  /* USD/barrel */
-    const wellRate  = parseInt(elWellRate.value)   || 30;  /* t/day */
+    /*
+     * ВХОДНЫЕ ДАННЫЕ
+     * ─────────────
+     * wells     — количество скважин
+     * W0        — начальная обводнённость, % (напр. 85)
+     * oilPrice  — цена нефти, $/барр (напр. 70)
+     * Q_liq0    — текущий дебит жидкости скважины, т/сут
+     *
+     * КАЛИБРОВКА ПО КЕЙСУ СКВАЖИНЫ 343:
+     * До РИР:   Q_liq=7,8 т/сут, W=86%  → Q_oil=1,1 т/сут
+     * После РИР: Q_liq=21,6 т/сут, W=26% → Q_oil=16,0 т/сут
+     *
+     * Эмпирическая модель:
+     *   liquidMultiplier = 1 + (W0/100) × 2.05
+     *     → при W=86%: 1 + 0.86×2.05 = 2.763 ⇒ Q_liq_after = 7.8×2.763 = 21.55 ≈ 21.6 ✓
+     *   newWaterCut = W0 × 0.30  (мин. 15%)
+     *     → при W=86%: 86×0.30 = 25.8% ≈ 26% ✓
+     */
+    const wells    = parseInt(elWellCount.value) || 5;
+    const W0       = parseInt(elWaterCut.value)  || 85;   /* % */
+    const oilPrice = parseInt(elOilPrice.value)  || 70;   /* $/barrel */
+    const Q_liq0   = parseInt(elWellRate.value)  || 30;   /* т/сут (total liquid) */
 
-    /* ── Model ── */
-    const successRate      = 0.92;
-    const waterReduction   = 0.62;                         /* 62% water cut reduction */
-    const rateMultiplier   = 1 + (waterCut / 100) * 1.8;  /* oil rate multiplier */
-    const operationDays    = 180;                          /* 6 months */
-    const costPerWellUSD   = 17_000;
-    const tonPerBarrel     = 0.136;
-    const oilPricePerTon  = oilPrice / tonPerBarrel;
+    /* ── Состояние ДО РИР ── */
+    const Q_oil0 = Q_liq0 * (1 - W0 / 100);                  /* т/сут нефти */
 
-    const extraRatePerWell  = wellRate * (rateMultiplier - 1) * successRate;
-    const totalExtraOil     = extraRatePerWell * wells * operationDays;
-    const revenueUSD        = totalExtraOil * oilPricePerTon;
-    const costUSD           = costPerWellUSD * wells;
-    const roi               = ((revenueUSD - costUSD) / costUSD) * 100;
-    const newWaterCut       = waterCut * (1 - waterReduction);
+    /* ── Прогноз ПОСЛЕ РИР ── */
+    const liquidMult = 1 + (W0 / 100) * 2.05;                /* множитель дебита жидкости */
+    const W1_raw     = W0 * 0.30;                             /* новая обводнённость ~ 30% от начальной */
+    const W1         = Math.max(W1_raw, 15);                  /* не ниже 15% */
+    const Q_liq1     = Q_liq0 * liquidMult;                   /* т/сут жидкости после */
+    const Q_oil1     = Q_liq1 * (1 - W1 / 100);              /* т/сут нефти после */
 
-    /* ── Update result elements (null-safe) ── */
+    /* ── Прирост нефти ── */
+    const deltaOilPerWell = Math.max(Q_oil1 - Q_oil0, 0);    /* т/сут доп. нефти с 1 скважины */
+    const dW              = W0 - W1;                          /* снижение обводнённости, п.п. */
+
+    /* ── За 6 месяцев (180 сут) ── */
+    const days          = 180;
+    const totalExtraOil = deltaOilPerWell * wells * days;     /* тонн за период */
+
+    /* ── Экономика ── */
+    const TON_PER_BARREL   = 0.136;                           /* конверсия: 1 т = 1/0.136 барр */
+    const oilPricePerTon   = oilPrice / TON_PER_BARREL;      /* $/тонна */
+    const revenueUSD       = totalExtraOil * oilPricePerTon;  /* доп. выручка за 6 мес, $ */
+    const costPerWellUSD   = 18_000;                          /* стоимость 1 операции РИР, $ */
+    const totalCostUSD     = costPerWellUSD * wells;          /* общие затраты, $ */
+    const netProfitUSD     = revenueUSD - totalCostUSD;       /* чистая прибыль, $ */
+    const roi              = netProfitUSD / totalCostUSD * 100;  /* ROI, % */
+    const paybackDays      = totalCostUSD / (deltaOilPerWell * wells * oilPricePerTon / days); /* сут */
+
+    /* ── Обновление DOM ── */
     const set = (id, v) => { const el = $(id); if (el) el.textContent = v; };
 
     set('resultRevenue', '$ ' + fmt(Math.round(revenueUSD)));
     set('resultOil',     '+' + Math.round(totalExtraOil).toLocaleString('ru') + ' т');
-    set('resultWater',   '−' + Math.round(waterCut - newWaterCut) + ' п.п.');
-    set('resultCost',    '$ ' + fmt(Math.round(costUSD)));
+    set('resultWater',   '−' + Math.round(dW) + ' п.п.');
+    set('resultCost',    '$ ' + fmt(Math.round(totalCostUSD)));
     set('resultROI',     Math.round(roi) + '%');
 
-    /* ── ROI Chart ── */
+    /* ── ROI-диаграмма (кумулятивная выручка vs затраты) ── */
     const roiCtx = $('roiChart');
     if (!roiCtx) return;
 
     if (roiChartInstance) { roiChartInstance.destroy(); roiChartInstance = null; }
 
-    const labels   = ['Мес 1', 'Мес 2', 'Мес 3', 'Мес 4', 'Мес 5', 'Мес 6'];
-    const revenues = labels.map((_, i) =>
+    const labels       = ['Мес 1', 'Мес 2', 'Мес 3', 'Мес 4', 'Мес 5', 'Мес 6'];
+    const cumulRevenue = labels.map((_, i) =>
       Math.round((totalExtraOil / 6) * (i + 1) * oilPricePerTon)
     );
-    const costs = labels.map(() => Math.round(costUSD));
+    const costLine = labels.map(() => Math.round(totalCostUSD));
 
     roiChartInstance = new Chart(roiCtx, {
       type: 'bar',
@@ -1050,17 +1078,17 @@ function makeSparkline(id, data, color) {
         labels,
         datasets: [
           {
-            label: 'Доп. выручка ($)',
-            data: revenues,
+            label: 'Доп. выручка нарастающим итогом ($)',
+            data: cumulRevenue,
             backgroundColor: 'rgba(13,13,13,0.12)',
-            borderColor: 'rgba(13,13,13,0.75)',
+            borderColor: 'rgba(13,13,13,0.8)',
             borderWidth: 2,
             borderRadius: 6,
             borderSkipped: false,
           },
           {
-            label: 'Затраты ($)',
-            data: costs,
+            label: 'Затраты на РИР ($)',
+            data: costLine,
             type: 'line',
             borderColor: '#EA580C',
             borderWidth: 2,
@@ -1096,27 +1124,23 @@ function makeSparkline(id, data, color) {
       }
     });
 
-    /* Animate result panel */
+    /* animate panel */
     const panel = $('calcResults');
     if (panel) {
       panel.style.animation = 'none';
-      panel.offsetHeight; // reflow
+      panel.offsetHeight;
       panel.style.animation = 'fadeInUp 0.4s ease';
     }
   }
 
-  /* Run on open (first visible render) */
+  /* Запуск при открытии drawer */
   const drawer = $('calcDrawer');
   if (drawer) {
-    const drawerObs = new MutationObserver(() => {
-      if (drawer.classList.contains('open')) {
-        calculate();
-        drawerObs.disconnect();
-      }
+    const mo = new MutationObserver(() => {
+      if (drawer.classList.contains('open')) { calculate(); mo.disconnect(); }
     });
-    drawerObs.observe(drawer, { attributes: true, attributeFilter: ['class'] });
+    mo.observe(drawer, { attributes: true, attributeFilter: ['class'] });
   }
-  /* Also run immediately in case already visible */
   calculate();
 
   function fmt(n) {
@@ -1125,6 +1149,7 @@ function makeSparkline(id, data, color) {
     return String(n);
   }
 })();
+
 
 /* ═══ 13. CONTACT FORM ═══ */
 (function initContactForm() {
