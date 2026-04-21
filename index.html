@@ -202,7 +202,7 @@
     <ul class="nav-links" id="navLinks">
       <li><a href="#tasks" class="nav-link">Задачи</a></li>
       <li><a href="#why" class="nav-link">Технология</a></li>
-      <li><a href="#results" class="nav-link">Результаты</a></li>
+      <li><a href="#efficiency" class="nav-link">Результаты</a></li>
       <li><a href="#rir-process" class="nav-link">Процесс РИР</a></li>
       <li><a href="case343.html" class="nav-link nav-link-case">Скважина 343</a></li>
     </ul>
@@ -428,87 +428,42 @@
 
 <div class="divider"></div>
 
-<!-- ═══ WHY IT WORKS ═══ -->
-<section class="section2 bg-light" id="why">
+<!-- ═══ RESULTS & MECHANISM ═══ -->
+<section class="section2 bg-light" id="efficiency">
   <div class="container">
-    <div class="sec-label">— Механизм</div>
-    <h2 class="sec-title">Почему NanoCem UT-9 работает там,<br>где обычный цемент бессилен</h2>
-    <p class="sec-sub">Уникальный помол частиц — принципиальное отличие</p>
+    <div class="sec-label sec-centered">— Результаты и Механизм</div>
+    <h2 class="sec-title sec-centered">Доказанная эффективность</h2>
+    <p class="sec-sub sec-centered">Статистика по реальным объектам применения NanoCem UT-9 в Казахстане</p>
 
-    <div class="why-cols">
-      <div class="why-col why-col-bad">
-        <div class="why-col-title">Обычный цемент — не работает</div>
-        <div class="why-col-particle">Частицы: 50–100 мкм</div>
-        <div class="why-crack">
-          <div class="why-crack-title">Трещина 0,05 мм</div>
-          <pre style="margin:0;font-size:.65rem;line-height:1.7;color:#555">  ┌──────────────┐
-  │    ТРЕЩИНА   │
-  │              │
-  │  ●●● БЛОК   │← Частицы НЕ
-  │  ●●● ═══    │  проходят
-  │  ██████     │← Пробка
-  └──────────────┘</pre>
-        </div>
-        <div class="why-verdict">
-          <div class="why-verdict-item"><span class="v-ico bad">✗</span> Блокировка на поверхности</div>
-          <div class="why-verdict-item"><span class="v-ico bad">✗</span> Трещина остаётся открытой</div>
-          <div class="why-verdict-item"><span class="v-ico bad">✗</span> Перетоки продолжаются</div>
-        </div>
+    <div class="kpi2-grid">
+      <div class="kpi2-card">
+        <div class="kpi2-num kpi-decimal" data-target-text="14,5×">0</div>
+        <div class="kpi2-label">Рост дебита нефти</div>
+        <div class="kpi2-sub">С 1,1 до 16 т/сут в среднем</div>
+        <div class="kpi2-spark"><canvas id="spark1"></canvas></div>
       </div>
-      <div class="why-col why-col-good">
-        <div class="why-col-title">NanoCem UT-9 — работает</div>
-        <div class="why-col-particle">Частицы: <strong>3,5 мкм</strong> — в 14–28 раз меньше</div>
-        <div class="why-crack">
-          <div class="why-crack-title">Трещина 0,05 мм</div>
-          <pre style="margin:0;font-size:.65rem;line-height:1.7;color:#333">  ┌──────────────┐
-  │    ТРЕЩИНА   │
-  │              │
-  │  ····        │← Nano-частицы
-  │  ···· →→→→  │  свободно
-  │  ████████   │← Полное заполн.
-  └──────────────┘</pre>
-        </div>
-        <div class="why-verdict">
-          <div class="why-verdict-item"><span class="v-ico good">✓</span> Глубокое проникновение</div>
-          <div class="why-verdict-item"><span class="v-ico good">✓</span> Трещина герметизирована</div>
-          <div class="why-verdict-item"><span class="v-ico good">✓</span> Перетоки ликвидированы</div>
-        </div>
+      <div class="kpi2-card">
+        <div class="kpi2-num" data-target="95">0</div>
+        <div class="kpi2-label">Успешность операций %</div>
+        <div class="kpi2-sub">По завершённым объектам РИР</div>
+        <div class="kpi2-spark"><canvas id="spark2"></canvas></div>
       </div>
-    </div>
-
-    <div class="why-metrics">
-      <div class="why-metric">
-        <div class="why-metric-num">В 14–28 раз</div>
-        <div class="why-metric-label">Мельче обычного цемента<br>(D50 = 3,5 мкм vs 50–100 мкм)</div>
+      <div class="kpi2-card">
+        <div class="kpi2-num" data-target="60">0</div>
+        <div class="kpi2-label">п.п. снижение обводнённости</div>
+        <div class="kpi2-sub">С 86% до 26% в среднем</div>
+        <div class="kpi2-spark"><canvas id="spark3"></canvas></div>
       </div>
-      <div class="why-metric">
-        <div class="why-metric-num">от 0,02 мм</div>
-        <div class="why-metric-label">Минимальная трещина,<br>в которую проникает</div>
-      </div>
-      <div class="why-metric">
-        <div class="why-metric-num">65–75 МПа</div>
-        <div class="why-metric-label">Прочность камня<br>через 28 суток</div>
-      </div>
-    </div>
-
-    <!-- Charts row -->
-    <div class="chart-row" style="margin-top:40px">
-      <div class="chart-card chart-card-wide">
-        <div class="chart-title">Проникающая способность в трещины (мм)</div>
-        <div class="chart-wrap chart-wrap-md">
-          <canvas id="penetrationChart"></canvas>
-        </div>
-      </div>
-      <div class="chart-card chart-card-wide">
-        <div class="chart-title">Прочность камня vs время (МПа)</div>
-        <div class="chart-wrap chart-wrap-md">
-          <canvas id="strengthChart"></canvas>
-        </div>
+      <div class="kpi2-card">
+        <div class="kpi2-num kpi-decimal" data-target-text="3,5 мкм">0</div>
+        <div class="kpi2-label">Размер частиц D50</div>
+        <div class="kpi2-sub">В 14–28 раз меньше обычного цемента</div>
+        <div class="kpi2-spark"><canvas id="spark4"></canvas></div>
       </div>
     </div>
 
     <!-- Dispersity visualization -->
-    <div class="particle-viz-wrap" style="margin-top:40px">
+    <div class="particle-viz-wrap" style="margin-top:60px">
       <div class="pv-label">— Визуализация проникновения в трещину</div>
       <div class="particle-viz-inner">
         <div class="crack-canvas-box">
@@ -550,44 +505,38 @@
         </div>
       </div>
     </div>
-  </div>
-</section>
 
-<div class="divider"></div>
-
-<!-- ═══ RESULTS ═══ -->
-<section class="section2 bg-white" id="results">
-  <div class="container">
-    <div class="sec-label sec-centered">— Результаты</div>
-    <h2 class="sec-title sec-centered">Доказанная эффективность</h2>
-    <p class="sec-sub sec-centered">Статистика по реальным объектам применения NanoCem UT-9 в Казахстане</p>
-
-    <div class="kpi2-grid">
-      <div class="kpi2-card">
-        <div class="kpi2-num kpi-decimal" data-target-text="14,5×">0</div>
-        <div class="kpi2-label">Рост дебита нефти</div>
-        <div class="kpi2-sub">С 1,1 до 16 т/сут в среднем</div>
-        <div class="kpi2-spark"><canvas id="spark1"></canvas></div>
+    <!-- Charts row -->
+    <div class="chart-row" style="margin-top:60px">
+      <div class="chart-card chart-card-wide">
+        <div class="chart-title">Проникающая способность в трещины (мм)</div>
+        <div class="chart-wrap chart-wrap-md">
+          <canvas id="penetrationChart"></canvas>
+        </div>
       </div>
-      <div class="kpi2-card">
-        <div class="kpi2-num" data-target="95">0</div>
-        <div class="kpi2-label">Успешность операций %</div>
-        <div class="kpi2-sub">По завершённым объектам РИР</div>
-        <div class="kpi2-spark"><canvas id="spark2"></canvas></div>
-      </div>
-      <div class="kpi2-card">
-        <div class="kpi2-num" data-target="60">0</div>
-        <div class="kpi2-label">п.п. снижение обводнённости</div>
-        <div class="kpi2-sub">С 86% до 26% в среднем</div>
-        <div class="kpi2-spark"><canvas id="spark3"></canvas></div>
-      </div>
-      <div class="kpi2-card">
-        <div class="kpi2-num kpi-decimal" data-target-text="3,5 мкм">0</div>
-        <div class="kpi2-label">Размер частиц D50</div>
-        <div class="kpi2-sub">В 14–28 раз меньше обычного цемента</div>
-        <div class="kpi2-spark"><canvas id="spark4"></canvas></div>
+      <div class="chart-card chart-card-wide">
+        <div class="chart-title">Прочность камня vs время (МПа)</div>
+        <div class="chart-wrap chart-wrap-md">
+          <canvas id="strengthChart"></canvas>
+        </div>
       </div>
     </div>
+
+    <div class="why-metrics" style="margin-top:60px">
+      <div class="why-metric">
+        <div class="why-metric-num">В 14–28 раз</div>
+        <div class="why-metric-label">Мельче обычного цемента<br>(D50 = 3,5 мкм vs 50–100 мкм)</div>
+      </div>
+      <div class="why-metric">
+        <div class="why-metric-num">от 0,02 мм</div>
+        <div class="why-metric-label">Минимальная трещина,<br>в которую проникает</div>
+      </div>
+      <div class="why-metric">
+        <div class="why-metric-num">65–75 МПа</div>
+        <div class="why-metric-label">Прочность камня<br>через 28 суток</div>
+      </div>
+    </div>
+
   </div>
 </section>
 
@@ -932,7 +881,7 @@
           <div class="footer-col-title">Технология</div>
           <a href="#tasks">Задачи РИР</a>
           <a href="#why">Механизм</a>
-          <a href="#results">Результаты</a>
+          <a href="#efficiency">Результаты</a>
           <a href="#rir-process">Процесс работ</a>
           <a href="case343.html">Скважина 343</a>
         </div>
