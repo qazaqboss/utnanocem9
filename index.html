@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NanoCem UT-9 — Ликвидация обводнения и восстановление дебита нефти</title>
-  <meta name="description" content="NanoCem UT-9 — тампонажный микроцемент для РИР. Ликвидация заколонных перетоков, снижение обводнённости с 86% до 26%, рост дебита в 14,5 раз. Казахстан, ТОО ЭкоМикс." />
+  <meta name="description" content="NanoCem UT-9 — тампонажный микроцемент для РИР. Ликвидация заколонных перетоков, снижение обводнённости с 86% до 26%, рост дебита в 14,5 раз." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
@@ -194,8 +194,6 @@
 <nav class="nav" id="navbar">
   <div class="nav-inner">
     <a href="#" class="nav-logo">
-      <span class="logo-easymix">EasyMix</span>
-      <span class="logo-dot">·</span>
       <span class="logo-nano">NanoCem</span>
       <span class="logo-model">UT‑9</span>
     </a>
@@ -206,7 +204,6 @@
       <li><a href="#rir-process" class="nav-link">Процесс РИР</a></li>
       <li><a href="#case343-section" class="nav-link nav-link-case">Скважина 343</a></li>
     </ul>
-    <a href="#contact" class="btn-nav">Получить расчёт</a>
     <button class="nav-burger" id="navBurger" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
@@ -221,8 +218,13 @@
       <!-- LEFT -->
       <div class="hero2-left">
         <div class="hero2-eyebrow">Технология для ремонтно-изоляционных работ · Нефтегаз Казахстана</div>
-        <h1 class="hero2-title">
-          Ликвидация <em>обводнения</em><br>и восстановление<br><em>дебита нефти</em>
+        <h1 class="hero2-title" style="line-height:1.15;">
+          Снижение <span style="color:#666; font-weight:600;">обводненности скважин</span><br>
+          Увеличение <span style="color:#666; font-weight:600;">дебита нефти</span><br>
+          <span style="display:inline-flex; align-items:center; gap:8px; margin-top:16px; padding: 8px 16px; background:#f5f5f5; border:1px solid #ddd; border-radius:8px; font-size:clamp(0.75rem, 1.5vw, 0.875rem); font-weight:800; color:#000; letter-spacing:0.08em; text-transform:uppercase;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+            Без капитального ремонта
+          </span>
         </h1>
         <p class="hero2-sub">
           Когда заколонные перетоки снижают добычу,<br>
@@ -303,7 +305,26 @@
     <!-- Hero bottom bar -->
     <div class="rir-info-panel" style="margin-top:48px;margin-bottom:0;border-radius:12px;background:#000;color:#fff;text-align:center;padding:32px; display:block;">
       <h3 style="font-size:28px;margin:0;">NanoCem UT-9 проникает в микротрещины толщиной от 0,02 мм</h3>
-      <p style="margin:12px 0 0;font-size:18px;color:#fff;opacity:0.9;">Создавая абсолютно непроницаемый монолитный барьер там, где микроцемент и портландцемент просто блокируются на входе.</p>
+      <p style="margin:12px 0 24px;font-size:18px;color:#fff;opacity:0.9;">Создавая абсолютно непроницаемый монолитный барьер там, где микроцемент и портландцемент просто блокируются на входе.</p>
+      
+      <div style="display:flex;justify-content:center;gap:32px;flex-wrap:wrap;text-align:left;border-top:1px solid rgba(255,255,255,0.2);padding-top:24px;">
+        <div>
+          <div style="font-size:12px;color:#999;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;">Размер частиц D50</div>
+          <div style="font-size:20px;font-weight:700;color:#fff;">~3,5 мкм</div>
+        </div>
+        <div>
+          <div style="font-size:12px;color:#999;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;">Мин. трещина</div>
+          <div style="font-size:20px;font-weight:700;color:#fff;">от 0,02 мм</div>
+        </div>
+        <div>
+          <div style="font-size:12px;color:#999;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;">Прочность (28 сут)</div>
+          <div style="font-size:20px;font-weight:700;color:#fff;">65–75 МПа</div>
+        </div>
+        <div>
+          <div style="font-size:12px;color:#999;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;">Плотность раствора</div>
+          <div style="font-size:20px;font-weight:700;color:#fff;">1,6–1,95 г/см³</div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -604,21 +625,7 @@
       </div>
     </div>
 
-    <!-- Charts row -->
-    <div class="chart-row" style="margin-top:60px">
-      <div class="chart-card chart-card-wide">
-        <div class="chart-title">Проникающая способность в трещины (мм)</div>
-        <div class="chart-wrap chart-wrap-md">
-          <canvas id="penetrationChart"></canvas>
-        </div>
-      </div>
-      <div class="chart-card chart-card-wide">
-        <div class="chart-title">Прочность камня vs время (МПа)</div>
-        <div class="chart-wrap chart-wrap-md">
-          <canvas id="strengthChart"></canvas>
-        </div>
-      </div>
-    </div>
+
 
       </div>
 </section>
@@ -683,84 +690,15 @@
 
 <div class="divider"></div>
 
-<!-- ═══ SPECS ═══ -->
-<section class="section2 bg-light" id="specs">
+
+<!-- ═══ CONCLUSION ═══ -->
+<section class="cta2-section" id="conclusion" style="padding: 120px 0;">
   <div class="container">
-    <div class="sec-label">— Характеристики</div>
-    <h2 class="sec-title">Технические характеристики</h2>
-    <p class="sec-sub">Параметры, которые обеспечивают результат</p>
-
-    <div class="specs-table-wrap">
-      <table class="specs2-table">
-        <tbody>
-          <tr><td>Размер частиц D50</td><td>~3,5 мкм</td></tr>
-          <tr><td>Размер частиц D95</td><td>≤ 9,5 мкм</td></tr>
-          <tr><td>Минимальная трещина для проникновения</td><td>от 0,02 мм</td></tr>
-          <tr><td>Прочность на сжатие (24 ч)</td><td>≥ 12 МПа</td></tr>
-          <tr><td>Прочность на сжатие (28 сут)</td><td>65–75 МПа</td></tr>
-          <tr><td>Водонепроницаемость</td><td>W14–W16</td></tr>
-          <tr><td>Температурный диапазон применения</td><td>+5…+120 °C</td></tr>
-          <tr><td>Время начала схватывания</td><td>~60 минут</td></tr>
-          <tr><td>Плотность тампонажного раствора NanoCem UT-9</td><td>1,6–1,95 г/см³</td></tr>
-          <tr><td>Водоцементное отношение В/Ц</td><td>0,5–0,7</td></tr>
-          <tr><td>Адгезия к бетону / металлу</td><td>≥ 2,5 МПа</td></tr>
-          <tr><td>Время приготовления суспензии</td><td>&lt; 40 минут</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Comparison table -->
-    <div style="margin-top:48px">
-      <div class="sec-label">— Сравнение с аналогами</div>
-      <div class="table-wrapper" style="margin-top:16px">
-        <table class="compare-table">
-          <thead>
-            <tr>
-              <th>Характеристика</th>
-              <th class="col-highlight">NanoCem UT-9</th>
-              <th>Портландцемент</th>
-              <th>Микроцемент</th>
-              <th>Полимеры</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td>D50, мкм</td><td class="col-highlight"><span class="val-best">3,5</span></td><td>50–80</td><td>8–16</td><td>—</td></tr>
-            <tr><td>Минимальная трещина, мм</td><td class="col-highlight"><span class="val-best">0,02</span></td><td>0,5–1,0</td><td>0,1–0,2</td><td>0,05–0,2</td></tr>
-            <tr><td>Прочность 28 сут, МПа</td><td class="col-highlight"><span class="val-best">75</span></td><td>30–45</td><td>50–60</td><td>15–30</td></tr>
-            <tr><td>Темп. применения, °C</td><td class="col-highlight"><span class="val-best">до 120</span></td><td>до 100</td><td>до 80</td><td>до 60</td></tr>
-            <tr><td>Успешность РИР</td><td class="col-highlight"><span class="val-best">95%</span></td><td>55%</td><td>72%</td><td>68%</td></tr>
-            <tr><td>Экол. безопасность</td><td class="col-highlight"><span class="val-best">✓ Полная</span></td><td>✓ Полная</td><td>✓ Полная</td><td>⚠ Ограничена</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- ═══ CTA / CONTACT ═══ -->
-<section class="cta2-section" id="contact">
-  <div class="container">
-    <div class="cta2-inner">
-      <h2 class="cta2-title">Узнайте эффект для вашей скважины</h2>
-      <p class="cta2-sub">Бесплатный расчёт объёма материала, срока окупаемости и прогнозируемого роста дебита для вашего интервала</p>
-
-      <form class="cta2-form" id="contactForm">
-        <div class="cta2-row">
-          <input type="text" class="cta2-input" placeholder="Название компании" id="formCompany" />
-          <input type="text" class="cta2-input" placeholder="Ваше имя и должность" id="formName" />
-        </div>
-        <input type="text" class="cta2-input" placeholder="Телефон или email" id="formEmail" />
-        <input type="text" class="cta2-input" placeholder="Текущая обводнённость (если известна)" id="formWaterCut" />
-        <textarea class="cta2-input cta2-textarea" placeholder="Кратко опишите проблему (заколонный переток, обводнение, падение дебита и т.д.)" id="formMessage"></textarea>
-        <button type="submit" class="cta2-btn">ПОЛУЧИТЬ РАСЧЁТ</button>
-        <div class="cta2-footer-note">Ответим в течение 24 часов · Все данные конфиденциальны</div>
-        <div class="form-success" id="formSuccess" style="display:none;color:#aaa;text-align:center;padding:12px 0">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-          Заявка отправлена! Свяжемся в течение 24 часов.
-        </div>
-      </form>
+    <div class="cta2-inner" style="max-width:840px; margin:0 auto; text-align:center;">
+      <h2 class="cta2-title" style="font-size:clamp(2rem, 4vw, 3.25rem); font-weight:900; letter-spacing:-0.03em; margin-bottom:24px;">Новая эра рентабельности</h2>
+      <p class="cta2-sub" style="font-size:1.1875rem; line-height:1.7; color:#bbb; margin-bottom:0;">
+        NanoCem UT-9 меняет подход к ремонтно-изоляционным работам. Скважины, которые ранее признавались нерентабельными из-за критического обводнения, сегодня возвращаются в фонд стабильной добычи. Технология сверхтонкого микроцементирования — это ваш прямой путь к максимальной эффективности месторождений.
+      </p>
     </div>
   </div>
 </section>
@@ -771,12 +709,10 @@
     <div class="footer-inner">
       <div class="footer-brand">
         <div class="nav-logo" style="font-size:1.15rem;margin-bottom:0.75rem;">
-          <span class="logo-easymix">EasyMix</span>
-          <span class="logo-dot">·</span>
           <span class="logo-nano">NanoCem</span>
           <span class="logo-model">UT‑9</span>
         </div>
-        <p class="footer-tagline">ТОО ЭкоМикс — официальный поставщик NanoCem UT-9 для нефтегазовой отрасли Казахстана.</p>
+        <p class="footer-tagline">Официальный сайт NanoCem UT-9 для нефтегазовой отрасли Казахстана.</p>
       </div>
       <div class="footer-links">
         <div class="footer-col">
@@ -787,19 +723,11 @@
           <a href="#rir-process">Процесс работ</a>
           <a href="#case343-section">Скважина 343</a>
         </div>
-        <div class="footer-col">
-          <div class="footer-col-title">Компания</div>
-          <a href="#specs">Характеристики</a>
 
-          <a href="#contact">Получить расчёт</a>
-          <a href="tel:87075390000">87075390000</a>
-          <a href="mailto:info@easymix.kz">info@easymix.kz</a>
-        </div>
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© 2026 ТОО ЭкоМикс · Актобе, Казахстан · Промзона 679/17. Все права защищены.</span>
-      <span>СТ РК · TÜV Certified · NanoCem UT-9</span>
+      <span>© 2026 NanoCem UT-9. Все права защищены.</span>
     </div>
   </div>
 </footer>
